@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bookmark Favorites – TerminoTech</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fffdf0;
+      text-align: center;
+      padding: 24px;
+      max-width: 480px;
+      margin: auto;
+    }
+    h2 {
+      color: #0a6c0a;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+      margin-top: 24px;
+    }
+    li {
+      background: #e8ffe8;
+      margin: 6px 0;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .meta {
+      font-size: 14px;
+      color: #055;
+    }
+    .remove-btn {
+      float: right;
+      background: #d33;
+      color: #fff;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button.main {
+      padding: 10px 18px;
+      margin: 8px 4px;
+      background: #0a6c0a;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .home {
+      display: inline-block;
+      margin-top: 18px;
+      text-decoration: none;
+      color: #fff;
+      background: #666;
+      padding: 10px 20px;
+      border-radius: 4px;
+    }
+    input {
+      padding: 10px;
+      width: 70%;
+      max-width: 300px;
+      margin-top: 12px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>My Favorite ICT Terms</h2>
+<p>Save the terms you use most often.</p>
+
+<input id="termInput" type="text" placeholder="Add a custom term..." />
+<button class="main" onclick="addCustom()">Add to Favorites</button>
+<button class="main" style="background:#555" onclick="clearFavorites()">Clear All</button>
+
+<ul id="favoritesList"></ul>
+
+<!-- smart back to coc translator -->
+<button id="backBtn" class="main">← Back to COC Translator</button>
+<br>
+<a href="home.html" class="home">← Back to Home</a>
+
+<script>
+// Term dictionary
+const COC1 = {
+  "HTML": { full: "HyperText Markup Language", coc: "COC 1", meaning: "Structures web content." },
+  "CSS": { full: "Cascading Style Sheets", coc: "COC 1", meaning: "Styles and layouts web pages." }
+};
+const COC2 = {
+  "Command Prompt": { full: "CMD", coc: "COC 2", meaning: "Windows command-line interpreter." }
+};
+const COC3 = {
+  "React": { full: "React JS", coc: "COC 3", meaning: "JavaScript library for UI components." }
+};
+const ALL = { ...COC1, ...COC2, ...COC3 };
+
+const listEl = document.getElementById("favoritesList");
+
+window.onload = () => {
+  setBackLink();
+  loadFavorites();
+};
+
+function loadFavorites() {
+  const favs = JSON.parse(localStorage.getItem("favorites")) || [];
+  listEl.innerHTML = favs.length ? "" : "<li>No favorites saved yet.</li>";
+  favs.forEach((term, idx) => {
+    const info = ALL[term] || { full: term, coc: "Custom", meaning: "(custom term)" };
+    const li = document.createElement("li");
+    li.innerHTML = `<strong>${term}</strong> <span class="meta">(${info.coc})</span>
+                    <button class="remove-btn" onclick="removeFav(${idx})">Remove</button><br>
+                    <span class="meta">${info.meaning}</span>`;
+    listEl.appendChild(li);
+  });
+}
+
+function addCustom() {
+  const val = document.getElementById("termInput").value.trim();
+  if (!val) return;
+  const favs = JSON.parse(localStorage.getItem("favorites")) || [];
+  if (!favs.includes(val)) favs.push(val);
+  localStorage.setItem("favorites", JSON.stringify(favs));
+  document.getElementById("termInput").value = "";
+  loadFavorites();
+}
+
+function removeFav(i) {
+  const favs = JSON.parse(localStorage.getItem("favorites")) || [];
+  favs.splice(i, 1);
+  localStorage.setItem("favorites", JSON.stringify(favs));
+  loadFavorites();
+}
+
+function clearFavorites() {
+  if (confirm("Clear all favorite terms?")) {
+    localStorage.removeItem("favorites");
+    loadFavorites();
+  }
+}
+
+function setBackLink() {
+  const ref = document.referrer.split('/').pop().toLowerCase();
+  let dest = "coc1.html";
+  if (ref.includes("coc2")) dest = "coc2.html";
+  else if (ref.includes("coc3")) dest = "coc3.html";
+  document.getElementById("backBtn").onclick = () => location.href = dest;
+}
+</script>
+
+</body>
+</html>
+

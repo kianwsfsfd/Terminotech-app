@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TerminoTech – COC 2 Dictionary</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0fff0;
+      text-align: center;
+      padding: 24px;
+      margin: auto;
+      max-width: 480px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    h1 {
+      color: #0b6b0b;
+      margin-bottom: 20px;
+      animation: slideDown 0.6s ease-in-out;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 6px auto;
+      width: 90%;
+      max-width: 340px;
+      display: block;
+      border-radius: 5px;
+    }
+
+    input {
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #0a6c0a;
+      color: white;
+      border: none;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: scale(1.03);
+      background-color: #095b09;
+    }
+
+    button:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+
+    #output {
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: left;
+      background: #dfffdc;
+      padding: 12px;
+      border-radius: 6px;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    #listBox {
+      display: none;
+      text-align: left;
+      margin-top: 20px;
+      background: #ebffeb;
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      font-size: 15px;
+    }
+
+    li {
+      padding: 6px 0;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-15px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>TerminoTech – COC 2 Translator</h1>
+
+<input id="termInput" type="text" placeholder="Enter a COC 2 term..." />
+<button id="translateBtn">Find</button>
+<button id="speakBtn" disabled>Pronounce</button>
+<button id="favoriteBtn" disabled>Add to Favorites</button>
+<button id="listBtn">List of Terms</button>
+<button class="btn" onclick="window.location.href='cocselection.html'">back</button>
+<div id="output"></div>
+<div id="listBox"></div>
+
+<script>
+  const terms = {
+  "Access Point": { full: "Access Point", meaning: "A networking hardware device that allows wireless devices to connect to a wired network. (COC 2)" },
+  "Adapter": { full: "Adapter", meaning: "A device that enables one type of hardware or interface to work with another. (COC 2)" },
+  "Address Resolution Protocol": { full: "Address Resolution Protocol", meaning: "A network protocol used to map an IP address to a physical machine address. (COC 2)" },
+  "Antivirus Software": { full: "Antivirus Software", meaning: "A program designed to detect and remove malicious software from a computer system. (COC 2)" },
+  "Application Layer": { full: "Application Layer", meaning: "The top layer of the OSI model that provides network services to end users. (COC 2)" },
+  "Bandwidth": { full: "Bandwidth", meaning: "The maximum rate of data transfer across a given path. (COC 2)" },
+  "Bitrate": { full: "Bitrate", meaning: "The number of bits transmitted per second in a digital network. (COC 2)" },
+  "Bridge": { full: "Bridge", meaning: "A device that connects and filters traffic between two network segments. (COC 2)" },
+  "Broadband": { full: "Broadband", meaning: "A high-capacity transmission technique that allows multiple signals to be sent simultaneously. (COC 2)" },
+  "Broadcast": { full: "Broadcast", meaning: "The transmission of data to all devices in a network segment. (COC 2)" },
+  "Bus Topology": { full: "Bus Topology", meaning: "A network topology where all devices are connected to a single central cable. (COC 2)" },
+  "Cable Modem": { full: "Cable Modem", meaning: "A device that provides internet access via a cable television network. (COC 2)" },
+  "Category 5 Cable": { full: "Category 5 Cable", meaning: "A type of twisted-pair cable used for Ethernet and other network standards. (COC 2)" },
+  "Category 6 Cable": { full: "Category 6 Cable", meaning: "An improved version of Cat5 cable, supporting higher frequencies for faster data transfer. (COC 2)" },
+  "Client": { full: "Client", meaning: "A computer or software that requests resources or services from a server. (COC 2)" },
+  "Client-Server Network": { full: "Client-Server Network", meaning: "A network model where client devices request services from a centralized server. (COC 2)" },
+  "Cloud Computing": { full: "Cloud Computing", meaning: "The delivery of computing services over the internet. (COC 2)" },
+  "Coaxial Cable": { full: "Coaxial Cable", meaning: "A type of electrical cable consisting of a central conductor, insulating layer, and shielding. (COC 2)" },
+  "Command Line Interface": { full: "Command Line Interface", meaning: "A text-based interface used to interact with the operating system or software. (COC 2)" },
+  "Computer Network": { full: "Computer Network", meaning: "A collection of interconnected devices that can share resources and data. (COC 2)" },
+  "Configuration": { full: "Configuration", meaning: "The arrangement and setup of system components and network devices. (COC 2)" },
+  "Connectivity": { full: "Connectivity", meaning: "The state of being connected or able to communicate with other systems. (COC 2)" },
+  "Console Cable": { full: "Console Cable", meaning: "A cable used to connect a computer to a network device for configuration. (COC 2)" },
+  "Cross-Over Cable": { full: "Cross-Over Cable", meaning: "A type of Ethernet cable used to connect two similar devices directly. (COC 2)" },
+  "Data Communication": { full: "Data Communication", meaning: "The process of exchanging data between two or more digital devices. (COC 2)" },
+  "Data Link Layer": { full: "Data Link Layer", meaning: "The second layer of the OSI model responsible for reliable data transfer across physical links. (COC 2)" },
+  "Default Gateway": { full: "Default Gateway", meaning: "A network node that routes traffic from a local network to other networks. (COC 2)" },
+  "DHCP": { full: "DHCP", meaning: "Dynamic Host Configuration Protocol, which automatically assigns IP addresses to devices. (COC 2)" },
+  "DNS": { full: "DNS", meaning: "Domain Name System, which translates domain names into IP addresses. (COC 2)" },
+  "Domain": { full: "Domain", meaning: "A group of computers and devices on a network administered as a unit. (COC 2)" },
+  "Download Speed": { full: "Download Speed", meaning: "The rate at which data is received from the internet. (COC 2)" },
+  "Duplex": { full: "Duplex", meaning: "A mode of communication allowing data to flow in both directions simultaneously. (COC 2)" },
+  "Dynamic IP Address": { full: "Dynamic IP Address", meaning: "An IP address that is automatically assigned by a DHCP server and can change over time. (COC 2)" },
+  "Encryption": { full: "Encryption", meaning: "The process of converting data into a secure format to prevent unauthorized access. (COC 2)" },
+  "Ethernet": { full: "Ethernet", meaning: "A common method of networking computers using wired connections. (COC 2)" },
+  "Fiber Optic Cable": { full: "Fiber Optic Cable", meaning: "A cable that transmits data as light through glass or plastic fibers. (COC 2)" },
+  "File Transfer Protocol": { full: "File Transfer Protocol", meaning: "A protocol used to transfer files between computers over a network. (COC 2)" },
+  "Firewall": { full: "Firewall", meaning: "A network security system that monitors and controls incoming and outgoing traffic. (COC 2)" },
+  "Gateway": { full: "Gateway", meaning: "A device that connects different networks and translates communication protocols. (COC 2)" },
+  "Gigabit Ethernet": { full: "Gigabit Ethernet", meaning: "An Ethernet standard that supports data transfer rates up to 1 Gbps. (COC 2)" },
+  "Hub": { full: "Hub", meaning: "A basic networking device that connects multiple computers in a network and broadcasts data to all. (COC 2)" },
+  "IEEE 802.11": { full: "IEEE 802.11", meaning: "A set of standards for wireless local area networks (Wi-Fi). (COC 2)" },
+  "Internet Protocol": { full: "Internet Protocol", meaning: "A set of rules governing data transmission across networks. (COC 2)" },
+  "IP Address": { full: "IP Address", meaning: "A unique identifier assigned to each device on a network. (COC 2)" },
+  "IP Configuration": { full: "IP Configuration", meaning: "The setup of IP parameters, such as address, subnet mask, and gateway. (COC 2)" },
+  "IPV4": { full: "IPV4", meaning: "Internet Protocol version 4, which uses 32-bit addresses. (COC 2)" },
+  "IPV6": { full: "IPV6", meaning: "Internet Protocol version 6, which uses 128-bit addresses to support more devices. (COC 2)" },
+  "ISP": { full: "ISP", meaning: "Internet Service Provider, a company that offers internet access to customers. (COC 2)" },
+  "LAN": { full: "LAN", meaning: "Local Area Network, a network that connects devices within a limited area. (COC 2)" },
+  "Latency": { full: "Latency", meaning: "The time delay between a request for data and its delivery. (COC 2)" },
+  "MAC Address": { full: "MAC Address", meaning: "A unique hardware identifier assigned to a network interface card. (COC 2)" },
+  "Malware": { full: "Malware", meaning: "Malicious software designed to harm, exploit, or disable devices and networks. (COC 2)" }, 
+  "MAN": { full: "Metropolitan Area Network", meaning: "A network that covers a larger area than a LAN but smaller than a WAN, typically a city or campus. (COC 2)" },
+  "Modem": { full: "Modulator-Demodulator", meaning: "A device that converts digital data to analog signals and vice versa for internet communication. (COC 2)" },
+  "Monitoring Tools": { full: "Network Monitoring Tools", meaning: "Software applications used to observe, track, and manage network performance. (COC 2)" },
+  "Network Adapter": { full: "Network Interface Card", meaning: "A hardware component that enables a computer to connect to a network. (COC 2)" },
+  "Network Administrator": { full: "Network Administrator", meaning: "A professional responsible for maintaining and managing computer networks. (COC 2)" },
+  "Network Cable Tester": { full: "Cable Testing Device", meaning: "A tool used to verify the integrity and connectivity of network cables. (COC 2)" },
+  "Network Interface": { full: "Network Interface", meaning: "A point of interconnection between a computer and a private or public network. (COC 2)" },
+  "Network Layer": { full: "Network Layer", meaning: "The third layer in the OSI model responsible for logical addressing and routing. (COC 2)" },
+  "Network Protocol": { full: "Communication Protocol", meaning: "A set of rules that define how data is transmitted across a network. (COC 2)" },
+  "Network Security": { full: "Network Security", meaning: "The practice of protecting network integrity, confidentiality, and accessibility. (COC 2)" },
+  "Network Topology": { full: "Network Topology", meaning: "The arrangement of various elements (links, nodes) in a computer network. (COC 2)" },
+  "Node": { full: "Network Node", meaning: "Any device, such as a computer or printer, connected to a network. (COC 2)" },
+  "Packet": { full: "Data Packet", meaning: "A formatted unit of data carried by a packet-switched network. (COC 2)" },
+  "Packet Sniffer": { full: "Network Analyzer", meaning: "A tool used to capture and analyze packets of data transmitted over a network. (COC 2)" },
+  "Patch Cable": { full: "Patch Cable", meaning: "A short cable used to connect devices to a network switch or patch panel. (COC 2)" },
+  "Patch Panel": { full: "Patch Panel", meaning: "A mounted hardware assembly containing ports for network cable connections. (COC 2)" },
+  "Peer-to-Peer Network": { full: "P2P Network", meaning: "A network model where each device shares resources directly without a central server. (COC 2)" },
+  "Ping": { full: "Packet Internet Groper", meaning: "A command used to test the reachability of a host and measure latency. (COC 2)" },
+  "Port": { full: "Network Port", meaning: "A communication endpoint for sending and receiving data between devices. (COC 2)" },
+  "Port Forwarding": { full: "Port Forwarding", meaning: "A method of redirecting communication requests from one address and port number to another. (COC 2)" },
+  "Private IP": { full: "Private Internet Protocol", meaning: "An IP address used within a private network, not accessible from the internet. (COC 2)" },
+  "Protocol": { full: "Protocol", meaning: "A system of rules governing data communication between network devices. (COC 2)" },
+  "Proxy Server": { full: "Proxy Server", meaning: "A server that acts as an intermediary between a client and external servers. (COC 2)" },
+  "Public IP": { full: "Public Internet Protocol", meaning: "An IP address that allows devices to be accessible over the internet. (COC 2)" },
+  "RJ11": { full: "Registered Jack 11", meaning: "A standard connector used for telephone lines. (COC 2)" },
+  "RJ45": { full: "Registered Jack 45", meaning: "A standard connector used for Ethernet networking cables. (COC 2)" },
+  "Router": { full: "Router", meaning: "A device that forwards data packets between computer networks. (COC 2)" },
+  "Routing": { full: "Routing", meaning: "The process of selecting paths in a network along which to send network traffic. (COC 2)" },
+  "Routing Table": { full: "Routing Table", meaning: "A database in a router that stores routes for network destinations. (COC 2)" },
+  "Server": { full: "Server", meaning: "A computer or system that provides data, resources, or services to other devices in a network. (COC 2)" },
+  "Signal": { full: "Signal", meaning: "An electrical or optical transmission used to convey data over a medium. (COC 2)" },
+  "Simple Mail Transfer Protocol": { full: "SMTP", meaning: "A protocol used for sending emails between servers. (COC 2)" },
+  "Simple Network Management Protocol": { full: "SNMP", meaning: "A protocol for monitoring and managing network devices. (COC 2)" },
+  "Subnet": { full: "Subnet", meaning: "A subdivided segment of an IP network that improves organization and security. (COC 2)" },
+  "Subnet Mask": { full: "Subnet Mask", meaning: "A numerical label used to divide IP addresses into network and host portions. (COC 2)" },
+  "Switch": { full: "Network Switch", meaning: "A device that connects and manages multiple computers within a LAN. (COC 2)" },
+  "TCP": { full: "Transmission Control Protocol", meaning: "A core protocol that ensures reliable, ordered, and error-checked delivery of data. (COC 2)" },
+  "TCP/IP": { full: "Transmission Control Protocol/Internet Protocol", meaning: "A set of communication protocols used to interconnect network devices. (COC 2)" },
+  "Topology": { full: "Topology", meaning: "The physical or logical arrangement of devices in a network. (COC 2)" },
+  "Traceroute": { full: "Traceroute", meaning: "A network diagnostic tool used to track the path data takes from source to destination. (COC 2)" },
+  "Transmission Media": { full: "Transmission Media", meaning: "The physical pathways, such as cables or air, through which data travels. (COC 2)" },
+  "UDP": { full: "User Datagram Protocol", meaning: "A connectionless protocol that allows fast, but unreliable, data transmission. (COC 2)" },
+  "Upload Speed": { full: "Upload Speed", meaning: "The rate at which data is sent from a device to the internet. (COC 2)" },
+  "URL": { full: "Uniform Resource Locator", meaning: "The address used to identify and access resources on the internet. (COC 2)" },
+  "User Authentication": { full: "User Authentication", meaning: "The process of verifying the identity of a user attempting to access a network. (COC 2)" },
+  "Virtual LAN": { full: "VLAN", meaning: "A network configuration that allows segmentation of devices into logical groups. (COC 2)" },
+  "Virtual Private Network": { full: "VPN", meaning: "A secure connection over the internet that protects data through encryption. (COC 2)" },
+  "WAN": { full: "Wide Area Network", meaning: "A network that extends over a large geographical area, connecting multiple LANs. (COC 2)" },
+  "Wi-Fi": { full: "Wireless Fidelity", meaning: "A technology that allows wireless devices to connect to a local area network. (COC 2)" },
+  "Wired Network": { full: "Wired Network", meaning: "A network where devices are connected through physical cables. (COC 2)" },
+  "Wireless Network": { full: "Wireless Network", meaning: "A network that uses radio waves to connect devices without physical cables. (COC 2)" },
+  "Wireless Router": { full: "Wireless Router", meaning: "A device that combines the functions of a router and a wireless access point. (COC 2)" },
+  "WPA2": { full: "Wi-Fi Protected Access 2", meaning: "A security protocol that encrypts data on wireless networks. (COC 2)" },
+  "WPA3": { full: "Wi-Fi Protected Access 3", meaning: "An advanced wireless security protocol offering stronger encryption and privacy. (COC 2)" },
+  "Web Browser": { full: "Web Browser", meaning: "A software application used to access and view websites on the internet. (COC 2)" },
+"Web Server": { full: "Web Server", meaning: "A computer system that hosts websites and delivers web pages to users through a browser. (COC 2)" },
+"Web Hosting": { full: "Web Hosting", meaning: "A service that provides storage and access for websites on the internet. (COC 2)" },
+"Wireless Access Point": { full: "Wireless Access Point", meaning: "A device that allows wireless devices to connect to a wired network. (COC 2)" },
+"Wireless Adapter": { full: "Wireless Adapter", meaning: "A hardware component that allows a computer to connect to wireless networks. (COC 2)" },
+"Workgroup": { full: "Workgroup", meaning: "A group of computers connected in a peer-to-peer network that shares files and resources. (COC 2)" },
+"Workstation": { full: "Workstation", meaning: "A high-performance computer used for technical or scientific work. (COC 2)" },
+"Worm": { full: "Computer Worm", meaning: "A type of malware that replicates itself to spread to other computers. (COC 2)" },
+"Wired Equivalent Privacy": { full: "WEP", meaning: "An older wireless network security protocol replaced by WPA and WPA2. (COC 2)" },
+"Wireless Fidelity": { full: "Wi-Fi", meaning: "A technology that enables wireless networking of digital devices. (COC 2)" },
+"XML": { full: "Extensible Markup Language", meaning: "A markup language that defines a set of rules for encoding documents in a readable format. (COC 2)" },
+"Zigbee": { full: "Zigbee", meaning: "A wireless communication standard designed for low-power and low-data-rate applications. (COC 2)" },
+"Network Diagnostics": { full: "Network Diagnostics", meaning: "The process of identifying and resolving problems in a computer network. (COC 2)" },
+"Access Control": { full: "Access Control", meaning: "A security technique that regulates who or what can access network resources. (COC 2)" },
+"Active Directory": { full: "Active Directory", meaning: "A Microsoft service used to manage users, computers, and resources within a network. (COC 2)" },
+"Anomaly Detection": { full: "Anomaly Detection", meaning: "The process of identifying unusual patterns or behaviors in network traffic. (COC 2)" },
+"Application Gateway": { full: "Application Gateway", meaning: "A firewall that filters network traffic based on specific application-level protocols. (COC 2)" },
+"Authentication Server": { full: "Authentication Server", meaning: "A server that verifies the identity of users and devices before granting access. (COC 2)" },
+"Auto-Negotiation": { full: "Auto-Negotiation", meaning: "A feature that allows network devices to automatically configure transmission parameters. (COC 2)" },
+"Backbone Network": { full: "Backbone Network", meaning: "The central part of a network that connects multiple subnetworks for efficient data exchange. (COC 2)" },
+"Backup Server": { full: "Backup Server", meaning: "A server that stores copies of data and ensures recovery in case of failure. (COC 2)" },
+"Bandwidth Utilization": { full: "Bandwidth Utilization", meaning: "The measurement of actual data transfer relative to the available bandwidth. (COC 2)" },
+"Bit Error Rate": { full: "Bit Error Rate", meaning: "The percentage of bits that have errors relative to the total number of transmitted bits. (COC 2)" },
+"Bluetooth": { full: "Bluetooth", meaning: "A short-range wireless technology used for data exchange between devices. (COC 2)" },
+"Bridge Protocol Data Unit": { full: "BPDU", meaning: "A message exchanged by switches to prevent loops in a network using the Spanning Tree Protocol. (COC 2)" },
+"Broadcast Domain": { full: "Broadcast Domain", meaning: "A network segment where broadcast packets are sent to all devices. (COC 2)" },
+"CAT5e": { full: "Category 5e Cable", meaning: "An enhanced twisted-pair cable standard supporting higher data transfer rates. (COC 2)" },
+"Cellular Network": { full: "Cellular Network", meaning: "A communication network that provides wireless connectivity through cellular towers. (COC 2)" },
+"Circuit Switching": { full: "Circuit Switching", meaning: "A communication method that establishes a dedicated path between sender and receiver. (COC 2)" },
+"Collision Domain": { full: "Collision Domain", meaning: "A network area where data packets can collide with each other during transmission. (COC 2)" },
+"Command Prompt": { full: "Command Prompt", meaning: "A text-based interface used in Windows for executing commands and scripts. (COC 2)" },
+"Computer Virus": { full: "Computer Virus", meaning: "A malicious program that attaches itself to legitimate software and spreads when executed. (COC 2)" },
+"Connectionless Protocol": { full: "Connectionless Protocol", meaning: "A protocol that does not establish a connection before transmitting data. (COC 2)" },
+"Connection-Oriented Protocol": { full: "Connection-Oriented Protocol", meaning: "A protocol that requires a connection before data transmission begins. (COC 2)" },
+"Data Encryption Standard": { full: "DES", meaning: "An older symmetric-key algorithm for encrypting digital data. (COC 2)" },
+"Data Integrity": { full: "Data Integrity", meaning: "The accuracy and consistency of data throughout its lifecycle. (COC 2)" },
+"Database Server": { full: "Database Server", meaning: "A server dedicated to managing and providing access to databases. (COC 2)" },
+"Default Route": { full: "Default Route", meaning: "A network route used when no specific route is found for a destination. (COC 2)" },
+"Demilitarized Zone": { full: "DMZ", meaning: "A network area that separates an internal network from untrusted external networks. (COC 2)" },
+"Digital Certificate": { full: "Digital Certificate", meaning: "An electronic document used to prove ownership of a public key. (COC 2)" },
+"Digital Signature": { full: "Digital Signature", meaning: "An encrypted mark of authenticity that verifies data integrity and sender identity. (COC 2)" },
+"Directory Services": { full: "Directory Services", meaning: "A system that stores, organizes, and provides access to network resource information. (COC 2)" },
+"Distributed Denial of Service": { full: "DDoS Attack", meaning: "A cyberattack where multiple systems flood a target with traffic to disrupt services. (COC 2)" },
+"DNS Server": { full: "DNS Server", meaning: "A server that resolves domain names to their corresponding IP addresses. (COC 2)" },
+"Dynamic Routing": { full: "Dynamic Routing", meaning: "A routing method where routers automatically update paths based on network conditions. (COC 2)" },
+"Eavesdropping": { full: "Eavesdropping", meaning: "An unauthorized interception of private communication between devices. (COC 2)" },
+"Encryption Key": { full: "Encryption Key", meaning: "A random string of data used to encrypt and decrypt digital information. (COC 2)" },
+"File Sharing": { full: "File Sharing", meaning: "The practice of distributing or providing access to digital files over a network. (COC 2)" },
+"Firmware": { full: "Firmware", meaning: "Software permanently programmed into hardware devices to control their functions. (COC 2)" },
+"Flooding": { full: "Network Flooding", meaning: "A process of sending excessive data packets to overwhelm a network. (COC 2)" },
+"Gateway Protocol": { full: "Gateway Protocol", meaning: "A type of protocol used by routers to communicate and exchange routing information. (COC 2)" },
+"Host": { full: "Network Host", meaning: "Any device connected to a network that has an IP address and can send or receive data. (COC 2)" },
+"Intrusion Detection System": { full: "IDS", meaning: "A system that monitors network traffic for suspicious or malicious activities. (COC 2)" },
+"Intrusion Prevention System": { full: "IPS", meaning: "A network security system that detects and prevents threats in real time. (COC 2)" },
+"Load Balancing": { full: "Load Balancing", meaning: "The process of distributing network or application traffic across multiple servers. (COC 2)" },
+"MAC Filtering": { full: "MAC Filtering", meaning: "A network security method that allows or denies access based on MAC addresses. (COC 2)" },
+"Network Analyzer": { full: "Network Analyzer", meaning: "A tool used to inspect and evaluate network performance and traffic. (COC 2)" },
+"Network Bridge": { full: "Network Bridge", meaning: "A device that connects two local area networks and filters traffic between them. (COC 2)" },
+"Network Policy": { full: "Network Policy", meaning: "A set of rules that define how network resources are accessed and used. (COC 2)" },
+"Network Redundancy": { full: "Network Redundancy", meaning: "The inclusion of backup devices and paths to ensure reliability in case of failure. (COC 2)" },
+"Network Simulation": { full: "Network Simulation", meaning: "The process of modeling network behavior using software for testing and analysis. (COC 2)" },
+"Network Troubleshooting": { full: "Network Troubleshooting", meaning: "The process of diagnosing and resolving issues in computer networks. (COC 2)" },
+"Network Virtualization": { full: "Network Virtualization", meaning: "The creation of multiple virtual networks within a single physical infrastructure. (COC 2)" },
+"Packet Filtering": { full: "Packet Filtering", meaning: "A method used by firewalls to control data flow based on header information. (COC 2)" },
+"Patch Management": { full: "Patch Management", meaning: "The process of updating software and firmware to fix bugs and security issues. (COC 2)" },
+"Port Security": { full: "Port Security", meaning: "A network switch feature that restricts access based on device MAC addresses. (COC 2)" },
+"Proxy Configuration": { full: "Proxy Configuration", meaning: "The setup of a proxy server to filter or monitor internet traffic. (COC 2)" },
+"QoS": { full: "Quality of Service", meaning: "A technology that manages network traffic to ensure performance for critical applications. (COC 2)" },
+"Remote Access": { full: "Remote Access", meaning: "The ability to connect and manage a computer or network from a distant location. (COC 2)" },
+"Router Configuration": { full: "Router Configuration", meaning: "The process of setting up a router’s parameters and routing tables. (COC 2)" },
+"Routing Protocol": { full: "Routing Protocol", meaning: "A protocol that determines how routers communicate and exchange information. (COC 2)" },
+"Secure Socket Layer": { full: "SSL", meaning: "A standard security technology for establishing an encrypted link between a web server and browser. (COC 2)" },
+"Session Layer": { full: "Session Layer", meaning: "The fifth layer of the OSI model that manages communication sessions. (COC 2)" },
+"SMTP Server": { full: "SMTP Server", meaning: "A mail server that handles outgoing email messages. (COC 2)" },
+"SNMP Manager": { full: "SNMP Manager", meaning: "A system that collects and manages information from network devices using SNMP. (COC 2)" },
+"SSL Certificate": { full: "SSL Certificate", meaning: "A digital certificate that authenticates a website’s identity and enables HTTPS. (COC 2)" },
+"System Log": { full: "System Log", meaning: "A record of events and activities occurring within a computer or network system. (COC 2)" },
+"Telnet": { full: "Telnet", meaning: "A network protocol that allows remote login and command execution on another device. (COC 2)" },
+"Throughput": { full: "Throughput", meaning: "The actual rate at which data is successfully transmitted over a network. (COC 2)" },
+"Traceroute Command": { full: "Traceroute Command", meaning: "A diagnostic command used to display the route data takes through the network. (COC 2)" },
+"Transmission Delay": { full: "Transmission Delay", meaning: "The time required for data to travel from source to destination. (COC 2)" },
+"Virtual Machine": { full: "Virtual Machine", meaning: "A software-based emulation of a physical computer system. (COC 2)" },
+"VPN Server": { full: "VPN Server", meaning: "A server that establishes secure and encrypted connections for remote users. (COC 2)" },
+"Wi-Fi Analyzer": { full: "Wi-Fi Analyzer", meaning: "A tool used to scan, test, and troubleshoot wireless networks. (COC 2)" },
+"WINS Server": { full: "WINS Server", meaning: "A server that resolves NetBIOS names to IP addresses in Windows networks. (COC 2)" },
+"WLAN Controller": { full: "Wireless LAN Controller", meaning: "A device that manages multiple access points within a wireless network. (COC 2)" },
+"Zone-Based Firewall": { full: "Zone-Based Firewall", meaning: "A firewall configuration that groups interfaces into security zones for traffic control. (COC 2)" }
+
+};
+// ========== LOAD TERMS FROM ADMIN PAGE (COC2 ONLY) ==========
+const adminTermsCOC2 = JSON.parse(localStorage.getItem("addedTermsCOC2") || "[]");
+adminTermsCOC2.forEach(t => {
+    terms[t.term.toUpperCase()] = {
+        full: t.full || t.term,
+        meaning: t.meaning,
+        coc: "COC 1"
+    };
+});
+
+// ========== BUILD LOOKUP ==========
+let lookup = {};
+function rebuildLookup() {
+    lookup = {};
+    for (const key in terms) {
+        lookup[key.toUpperCase()] = key;
+        if (terms[key].full) lookup[terms[key].full.toUpperCase()] = key;
+    }
+}
+rebuildLookup();
+
+// ========== SEARCH FUNCTION ==========
+function searchTerm() {
+    const input = document.getElementById("termInput").value.trim().toUpperCase();
+    const key = lookup[input];
+    if (key && terms[key] && terms[key].coc === "COC 1") {
+        document.getElementById("output").innerHTML = `
+            <h3>${terms[key].full}</h3>
+            <p>${terms[key].meaning}</p>
+        `;
+    } else {
+        document.getElementById("output").innerHTML = "Term not found in COC 2.";
+    }
+}
+
+// ========== SPEAK BUTTON ==========
+function speakTerm() {
+    const text = document.getElementById("termInput").value;
+    if(!text) return alert("Enter a term to pronounce!");
+    let speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    window.speechSynthesis.speak(speech);
+}
+
+// ========== ADD TO FAVORITES ==========
+function addToFavorites() {
+    const term = document.getElementById("termInput").value.trim();
+    if (!term) return alert("Enter a term to add!");
+    let fav = JSON.parse(localStorage.getItem("favoritesCOC1") || "[]");
+    if (!fav.includes(term)) fav.push(term);
+    localStorage.setItem("favoritesCOC2", JSON.stringify(fav));
+    alert("Added to Favorites!");
+}
+
+// ========== SHOW LIST OF TERMS ==========
+function showList() {
+    let list = Object.keys(terms).map(k => `<li>${terms[k].full} – ${terms[k].meaning}</li>`).join("");
+    document.getElementById("output").innerHTML = `<ul>${list}</ul>`;
+}
+
+
+
+
+  const termInput    = document.getElementById("termInput");
+  const translateBtn = document.getElementById("translateBtn");
+  const speakBtn     = document.getElementById("speakBtn");
+  const listBtn      = document.getElementById("listBtn");
+  const favoriteBtn  = document.getElementById("favoriteBtn");
+  const outputDiv    = document.getElementById("output");
+  const listBox      = document.getElementById("listBox");
+
+  let currentTerm = "", currentFull = "";
+
+  translateBtn.addEventListener("click", () => {
+    const raw = termInput.value.trim();
+    if (!raw) return;
+    const alias = lookup[raw.toUpperCase()];
+    if (!alias) {
+      outputDiv.innerHTML = "<span style='color:red'>Term not found.</span>";
+      speakBtn.disabled = true;
+      favoriteBtn.disabled = true;
+      return;
+    }
+    const data = terms[alias];
+    currentTerm = alias;
+    currentFull = data.full;
+    outputDiv.innerHTML = `<strong>${alias}</strong><br><em>${data.full}</em><br>${data.meaning}`;
+    speakBtn.disabled = false;
+    favoriteBtn.disabled = false;
+  });
+
+  termInput.addEventListener("keyup", e => {
+    if (e.key === "Enter") translateBtn.click();
+  });
+
+  speakBtn.addEventListener("click", () => {
+    if (!currentFull) return;
+    const utter = new SpeechSynthesisUtterance(currentFull);
+    utter.lang = "en-US";
+    speechSynthesis.speak(utter);
+  });
+
+  listBtn.addEventListener("click", () => {
+  window.location.href = "COC1DICTIONARY.html";
+});
+
+  favoriteBtn.addEventListener("click", () => {
+    if (!currentTerm) return;
+    let favs = JSON.parse(localStorage.getItem("favorites")) || [];
+    if (!favs.includes(currentTerm)) favs.push(currentTerm);
+    localStorage.setItem("favorites", JSON.stringify(favs));
+    window.location.href = "Favoritelist.html";
+  });
+</script>
+<script>
+    // LOAD TERMS FROM LOCAL STORAGE
+    function loadTerms() {
+        let data = localStorage.getItem("termsData");
+        if (!data) {
+            return []; 
+        }
+        return JSON.parse(data);
+    }
+
+    const TERMS = loadTerms();
+
+    function translateTerm() {
+        const input = document.getElementById("searchInput").value.trim().toLowerCase();
+        let resultBox = document.getElementById("resultBox");
+
+        if (input === "") {
+            resultBox.innerHTML = "Please enter a term.";
+            return;
+        }
+
+        // SEARCH (case-insensitive)
+        const found = TERMS.find(t => t.term.toLowerCase() === input);
+
+        if (found) {
+            resultBox.innerHTML = `
+                <b>Term:</b> ${found.term}<br>
+                <b>Meaning:</b> ${found.meaning}
+            `;
+        } else {
+            resultBox.innerHTML = "Term not found.";
+        }
+    }
+
+    // ADD TO FAVORITES
+    function addToFavorites() {
+        const input = document.getElementById("searchInput").value.trim();
+        let favorites = JSON.parse(localStorage.getItem("favoriteList") || "[]");
+
+        favorites.push(input);
+        localStorage.setItem("favoriteList", JSON.stringify(favorites));
+        alert("Added to Favorites!");
+    }
+
+    // SPEAK
+    function speakTerm() {
+        const text = document.getElementById("searchInput").value;
+        const speech = new SpeechSynthesisUtterance(text);
+        speechSynthesis.speak(speech);
+    }
+</script>
+
+</body>
+</html>

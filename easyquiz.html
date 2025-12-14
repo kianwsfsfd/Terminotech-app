@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Easy Quiz</title>
+  <style>
+    body {
+      background-color: #f0ffe3;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      max-width: 480px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #216d27;
+      animation: fadeIn 1s ease-in;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      margin: 20px auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      animation: fadeIn 1s ease-in;
+    }
+
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .choice {
+      display: block;
+      margin: 8px auto;
+      background-color: #216d27;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 80%;
+      transition: background-color 0.3s;
+    }
+
+    .choice:hover {
+      background-color: #1a4f1d;
+    }
+
+    .back-btn {
+      margin-top: 30px;
+      background-color: #888;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .wrong-review {
+      background: #ffe6e6;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Easy Level Quiz</h2>
+
+  <div class="card" id="quizCard">
+    <div class="question" id="question">Loading...</div>
+    <div id="choices"></div>
+  </div>
+
+  <div>
+    <button class="back-btn" onclick="location.href='home.html'">⬅ Back to Menu</button>
+  </div>
+
+  <script>
+  const defaultQuestions = [
+      { question: "What does CPU stand for?", choices: ["Central Processing Unit", "Computer Program Unit", "Control Panel Utility"], answer: 0 },
+      { question: "What is the purpose of RAM?", choices: ["To store photos", "Temporary memory for active tasks", "To power the computer"], answer: 1 },
+      { question: "Which device is used to input text?", choices: ["Printer", "Monitor", "Keyboard"], answer: 2 },
+      { question: "What is the file extension of a webpage?", choices: [".html", ".doc", ".exe"], answer: 0 },
+      { question: "Which one is an output device?", choices: ["Scanner", "Mouse", "Speaker"], answer: 2 },
+      { question: "Which device lets you move a cursor?", choices: ["Monitor", "Mouse", "Speaker"], answer: 1 },
+      { question: "Which storage holds data permanently?", choices: ["RAM", "ROM", "Cache"], answer: 1 },
+      { question: "What device displays the output visually?", choices: ["Keyboard", "Monitor", "CPU"], answer: 1 },
+      { question: "Which device is used to print hard copies?", choices: ["Printer", "Scanner", "Projector"], answer: 0 },
+      { question: "What is an example of system software?", choices: ["MS Word", "Windows OS", "Facebook App"], answer: 1 },
+      { question: "What part of the computer stores data long-term?", choices: ["RAM", "Hard Drive", "Power Supply"], answer: 1 },
+      { question: "Which part powers up the computer?", choices: ["CPU", "Monitor", "Power Supply Unit"], answer: 2 },
+      { question: "Which is not an input device?", choices: ["Microphone", "Keyboard", "Speaker"], answer: 2 },
+      { question: "What software lets users browse the web?", choices: ["Browser", "Compiler", "Media Player"], answer: 0 },
+      { question: "What does GUI stand for?", choices: ["Graphical User Interface", "Global Unit Integration", "Graphic Usage Input"], answer: 0 }
+    ];
+    const storedQuestions = JSON.parse(localStorage.getItem("easyQuestions") || "[]");
+    const questions = [...defaultQuestions, ...storedQuestions];
+
+    let shuffled = [];
+    let current = 0;
+    let score = 0;
+    let wrongAnswers = [];
+
+    function shuffleQuestions() {
+      shuffled = [...questions].sort(() => 0.5 - Math.random());
+    }
+
+    function loadQuestion() {
+      const q = shuffled[current];
+      document.getElementById('question').innerText = q.question;
+      const choicesDiv = document.getElementById('choices');
+      choicesDiv.innerHTML = "";
+      q.choices.forEach((choice, i) => {
+        const btn = document.createElement("button");
+        btn.innerText = choice;
+        btn.className = "choice";
+        btn.onclick = () => checkAnswer(i);
+        choicesDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected) {
+      const q = shuffled[current];
+      if (selected === q.answer) {
+        score++;
+      } else {
+        wrongAnswers.push({
+          question: q.question,
+          selected: q.choices[selected],
+          correct: q.choices[q.answer]
+        });
+      }
+      current++;
+      setTimeout(() => {
+        if (current < shuffled.length) {
+          loadQuestion();
+        } else {
+          showResult();
+        }
+      }, 400);
+    }
+
+    function showResult() {
+      let resultHTML = `<h3>You've completed the Easy Quiz!</h3>`;
+      resultHTML += `<p>Your score is <strong>${score} / ${shuffled.length}</strong></p>`;
+
+      if (wrongAnswers.length > 0) {
+        resultHTML += `<h4>Review Your Mistakes:</h4>`;
+        wrongAnswers.forEach(item => {
+          resultHTML += `
+            <div class="wrong-review">
+              <strong>Q:</strong> ${item.question}<br>
+              <span style="color:red;"><strong>Your Answer:</strong> ${item.selected}</span><br>
+              <span style="color:green;"><strong>Correct Answer:</strong> ${item.correct}</span>
+            </div>`;
+        });
+      } else {
+        resultHTML += `<p style="color:green;">🎉 Perfect Score!</p>`;
+      }
+
+      document.getElementById("quizCard").innerHTML = resultHTML;
+    }
+
+    shuffleQuestions();
+    loadQuestion();
+  </script>
+</body>
+</html>
+

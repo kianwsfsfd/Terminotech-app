@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Normal Question</title>
+<style>
+  body {
+    background:#fff7e6;
+    font-family:Arial;
+    max-width:480px;
+    margin:auto;
+    padding:25px;
+    text-align:center;
+  }
+  input, button {
+    width:90%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #aaa;
+  }
+  button {
+    background:#b36b00;
+    color:white;
+    border:none;
+  }
+  button:hover { background:#8a5200; }
+  .itemBox {
+    background:white;
+    padding:12px;
+    border-radius:10px;
+    text-align:left;
+    margin-top:10px;
+    border:1px solid #bbb;
+  }
+  .smallBtn {
+    width:48%;
+    padding:8px;
+    font-size:14px;
+    border-radius:8px;
+  }
+</style>
+</head>
+<body>
+
+<h2>Add NORMAL Question</h2>
+
+<input type="text" id="q" placeholder="Enter Question">
+<input type="text" id="c1" placeholder="Choice 1">
+<input type="text" id="c2" placeholder="Choice 2">
+<input type="text" id="c3" placeholder="Choice 3">
+<input type="number" id="ans" placeholder="Correct Answer (0-2)">
+
+<button onclick="save()">Add Question</button>
+<button onclick="location.href='homequizadmin.html'" style="background:#777;">⬅ Back</button>
+
+<h3>Saved NORMAL Questions</h3>
+<div id="listBox"></div>
+
+<script>
+function save() {
+  let qv=q.value, c1v=c1.value, c2v=c2.value, c3v=c3.value, ansv=ans.value;
+  if (!qv||!c1v||!c2v||!c3v||ansv==="") { alert("Complete all fields!"); return; }
+
+  let list = JSON.parse(localStorage.getItem("normalQuestions") || "[]");
+  list.push({ question:qv, choices:[c1v,c2v,c3v], answer:Number(ansv) });
+
+  localStorage.setItem("normalQuestions", JSON.stringify(list));
+  q.value=c1.value=c2.value=c3.value=ans.value="";
+  load();
+}
+
+function removeItem(i){
+  let list = JSON.parse(localStorage.getItem("normalQuestions"));
+  list.splice(i,1);
+  localStorage.setItem("normalQuestions", JSON.stringify(list));
+  load();
+}
+
+function editItem(i){
+  let list = JSON.parse(localStorage.getItem("normalQuestions"));
+  let item=list[i];
+
+  let nq = prompt("Edit Question:", item.question);
+  if (nq===null) return;
+
+  let nc1 = prompt("Edit Choice 1:", item.choices[0]);
+  let nc2 = prompt("Edit Choice 2:", item.choices[1]);
+  let nc3 = prompt("Edit Choice 3:", item.choices[2]);
+  let na = prompt("Edit Answer (0-2):", item.answer);
+
+  list[i] = { question:nq, choices:[nc1,nc2,nc3], answer:Number(na) };
+  localStorage.setItem("normalQuestions", JSON.stringify(list));
+  load();
+}
+
+function load(){
+  let list = JSON.parse(localStorage.getItem("normalQuestions") || "[]" );
+  listBox.innerHTML="";
+  
+  list.forEach((item,i)=>{
+    listBox.innerHTML+=`
+      <div class="itemBox">
+        <b>${item.question}</b><br>
+        1. ${item.choices[0]}<br>
+        2. ${item.choices[1]}<br>
+        3. ${item.choices[2]}<br>
+        <b>Answer:</b> ${item.answer}<br><br>
+        <button class="smallBtn" onclick="editItem(${i})">Edit</button>
+        <button class="smallBtn" style="background:#a00" onclick="removeItem(${i})">Remove</button>
+      </div>
+    `;
+  });
+}
+
+load();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welcome - TerminoTech</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- LOAD ALL TERMS -->
+  <script src="allTerms.js"></script>
+
+  <script>
+  // ------------------------------
+  // MERGE ADMIN TERMS FROM COC1, COC2, COC3
+  // ------------------------------
+  (function() {
+    // Load admin-added terms from localStorage
+    const adminCOC1 = JSON.parse(localStorage.getItem("addedTermsCOC1") || "[]");
+    const adminCOC2 = JSON.parse(localStorage.getItem("addedTermsCOC2") || "[]");
+    const adminCOC3 = JSON.parse(localStorage.getItem("addedTermsCOC3") || "[]");
+
+    const adminTerms = [...adminCOC1, ...adminCOC2, ...adminCOC3];
+
+    const formattedAdminTerms = adminTerms.map(t => ({
+      term: t.term || "",
+      definition: t.meaning || "",
+      coc: t.coc || ""
+    }));
+
+    // Merge with allTerms
+    if (Array.isArray(allTerms)) {
+      allTerms.push(...formattedAdminTerms);
+    } else {
+      window.allTerms = [...formattedAdminTerms];
+
+    }
+  })();
+  </script>
+
+  <style>
+    
+  body {
+      font-family: Arial, sans-serif;
+      background-color: #eaffea;
+      padding: 30px 20px;
+      text-align: center;
+      max-width: 480px;
+      margin: auto;
+      animation: fadeIn 1s ease-in;
+    }
+    h2 { animation: slideDown 0.8s ease-in-out; }
+    p { animation: slideDown 1s ease-in-out; }
+
+    .btn {
+      background-color: green;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      margin: 15px auto;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      display: block;
+      transition: transform 0.2s ease;
+      animation: fadeIn 1s ease-in-out 0.5s forwards;
+    }
+    .btn:hover { transform: scale(1.05); }
+
+    .feature {
+      margin: 20px auto;
+      max-width: 90%;
+      text-align: left;
+      padding: 15px;
+      background-color: #f0fff0;
+      border-radius: 10px;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-in-out forwards;
+    }
+    .feature:hover { transform: scale(1.02); background-color: #dbffdb; }
+
+    .icon { font-size: 26px; display: inline-block; width: 40px; vertical-align: top; }
+    .logo { width: 90px; position: fixed; bottom: 15px; right: 15px; animation: fadeIn 1s ease-in-out 1s forwards; }
+
+    .search-container { margin-top: 18px; text-align: left; max-width: 100%; }
+    #searchInput {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #cfcfcf;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .suggestions {
+      margin-top: 6px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #eee;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+    }
+    .suggestion-item {
+      padding: 8px 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .suggestion-item:hover { background: #f6fff6; }
+
+    .term-results { margin-top: 12px; text-align: left; }
+    .term-card {
+      background-color: #f0fff0;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .term-card h3 { margin: 0 0 6px 0; font-size: 18px; }
+    .term-meta { font-size: 13px; color: #333; margin-bottom: 6px; }
+    .term-def { font-size: 14px; color: #111; }
+    .muted { color: #666; font-size: 13px; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes fadeInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    @media (max-width:420px){
+      body { padding: 18px 12px; }
+      .logo { width: 70px; }
+    }
+  </style>
+</head>
+<body>
+
+<h2>Welcome to <strong>TerminoTech</strong></h2>
+<p>An online resource for ICT terms</p>
+
+<button class="btn" onclick="window.location.href='cocselection.html'">Get Started</button>
+
+<div class="search-container">
+  <input id="searchInput" placeholder="Search ICT terms (type a term or letter)..." autocomplete="off" />
+  <div id="suggestions" class="suggestions" style="display:none"></div>
+  <div id="no-results" class="muted" style="display:none">No results.</div>
+</div>
+
+<div id="results" class="term-results"></div>
+
+<div class="feature" onclick="window.location.href='Favoritelist.html'">
+  <span class="icon">🔖</span>
+  <strong>Bookmark Favorites</strong><br>
+  Save your frequently used terms.
+</div>
+
+<div class="feature" onclick="window.location.href='miniquiz.html'">
+  <span class="icon">🎮</span>
+  <strong>Mini Quiz</strong><br>
+  Test your knowledge with fun quizzes.
+</div>
+
+<div class="feature" onclick="window.location.href='COC1DICTIONARY.html'">
+  <span class="icon">📚</span>
+  <strong>List of Terms</strong><br>
+  View all ICT terms in one place.
+</div>
+
+<img src="OCLOGO.jpg" alt="School Logo" class="logo">
+
+<script>
+// ------------------------------
+// SEARCH SYSTEM
+// ------------------------------
+const input = document.getElementById("searchInput");
+const suggestionsBox = document.getElementById("suggestions");
+const resultsBox = document.getElementById("results");
+const noResultsEl = document.getElementById("no-results");
+
+// FILTER SUGGESTIONS
+function getSuggestions(q) {
+  q = q.toLowerCase();
+  return allTerms.filter(t => t.term.toLowerCase().startsWith(q)).slice(0, 8);
+}
+
+// SHOW SUGGESTIONS
+function showSuggestions(list) {
+  suggestionsBox.innerHTML = "";
+  if (list.length === 0) {
+    suggestionsBox.style.display = "none";
+    return;
+  }
+  list.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "suggestion-item";
+    div.innerHTML = `<strong>${item.term}</strong><div class="muted">${item.coc}</div>`;
+    div.onclick = () => {
+      input.value = item.term;
+      displayResults([item]);
+      suggestionsBox.style.display = "none";
+    };
+    suggestionsBox.appendChild(div);
+  });
+  suggestionsBox.style.display = "block";
+}
+
+// SHOW RESULTS
+function displayResults(list) {
+  resultsBox.innerHTML = "";
+  if (list.length === 0) {
+    noResultsEl.style.display = "block";
+    return;
+  }
+  noResultsEl.style.display = "none";
+
+  list.forEach(t => {
+    const card = document.createElement("div");
+    card.className = "term-card";
+    card.innerHTML = `
+      <h3>${t.term}</h3>
+      <div class="term-meta">${t.coc}</div>
+      <div class="term-def">${t.definition}</div>
+    `;
+    resultsBox.appendChild(card);
+  });
+}
+
+// INPUT EVENT
+input.addEventListener("input", () => {
+  const q = input.value.trim();
+  if (!q) {
+    suggestionsBox.style.display = "none";
+    resultsBox.innerHTML = "";
+    return;
+  }
+
+  const sug = getSuggestions(q);
+  showSuggestions(sug);
+
+  const filtered = allTerms.filter(
+    t => t.term.toLowerCase().includes(q.toLowerCase()) ||
+         t.definition.toLowerCase().includes(q.toLowerCase())
+  );
+
+  displayResults(filtered.slice(0, 50));
+});
+
+// CLICK OUTSIDE HIDES SUGGESTIONS
+document.addEventListener("click", e => {
+  if (!e.target.closest(".search-container")) {
+    suggestionsBox.style.display = "none";
+  }
+});
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js");
+  });
+}
+</script>
+
+</body>
+</html>

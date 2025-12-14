@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TerminoTech – COC 1 Dictionary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0fff0;
+      text-align: center;
+      padding: 24px;
+      margin: auto;
+      max-width: 480px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    h1 {
+      color: #0b6b0b;
+      margin-bottom: 20px;
+      animation: slideDown 0.6s ease-in-out;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 6px auto;
+      width: 90%;
+      max-width: 340px;
+      display: block;
+      border-radius: 5px;
+    }
+
+    input {
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #0a6c0a;
+      color: white;
+      border: none;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: scale(1.03);
+      background-color: #095b09;
+    }
+
+    button:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+
+    #output {
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: left;
+      background: #dfffdc;
+      padding: 12px;
+      border-radius: 6px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    #listBox {
+      display: none;
+      text-align: left;
+      margin-top: 20px;
+      background: #ebffeb;
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      font-size: 15px;
+    }
+
+    li {
+      padding: 6px 0;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-15px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>TerminoTech – COC 1 Translator</h1>
+
+<input id="termInput" type="text" placeholder="Enter a COC 1 term..." />
+<button id="translateBtn">Find</button>
+<button id="speakBtn" disabled>Pronounce</button>
+<button id="favoriteBtn" disabled>Add to Favorites</button>
+<button id="listBtn">List of Terms</button>
+<button class="btn" onclick="window.location.href='cocselection.html'">back</button>
+
+<div id="output"></div>
+<div id="listBox"></div>
+
+<script>
+const terms = {
+"Anti-Static Mat": { full: "Static-Protective Mat", meaning: "A grounded mat that protects electronic components during handling. (COC 1)" },
+"Backup": { full: "Data Backup", meaning: "The process of creating a copy of data to prevent loss in case of system failure. (COC 1)" },
+"Beep Code": { full: "POST Beep Code", meaning: "Audible signals from the BIOS indicating hardware status or errors during boot. (COC 1)" },
+"BIOS": { full: "Basic Input Output System", meaning: "Firmware that initializes hardware during the computer startup process. (COC 1)" },
+"BIOS Setup Utility": { full: "BIOS Configuration Utility", meaning: "An interface used to configure system hardware settings. (COC 1)" },
+"Boot Disk": { full: "Bootable Disk", meaning: "A removable media that starts the computer and loads an operating system. (COC 1)" },
+"Boot Sequence": { full: "Boot Order Sequence", meaning: "The order in which devices are accessed during system startup. (COC 1)" },
+"Cable Tie": { full: "Cable Management Tie", meaning: "A plastic fastener used to organize and secure cables neatly. (COC 1)" },
+"Case Fan": { full: "Chassis Cooling Fan", meaning: "A fan mounted on the computer case to maintain airflow and cooling. (COC 1)" },
+"Chipset": { full: "Motherboard Chipset", meaning: "A set of electronic components that manage communication between CPU and peripherals. (COC 1)" },
+"CMOS": { full: "Complementary Metal-Oxide Semiconductor", meaning: "A chip that stores BIOS configurations and system settings. (COC 1)" },
+"CMOS Battery": { full: "Complementary Metal-Oxide Semiconductor Battery", meaning: "A battery that powers BIOS memory to retain settings. (COC 1)" },
+"Command Prompt": { full: "Command Line Interface", meaning: "A text-based system used to execute commands directly in the OS. (COC 1)" },
+"Control Panel": { full: "System Control Panel", meaning: "An interface used to configure and manage computer settings. (COC 1)" },
+"Cooling Fan": { full: "Computer Cooling Fan", meaning: "A device that circulates air to cool internal components. (COC 1)" },
+"CPU": { full: "Central Processing Unit", meaning: "The main processor that performs all the instructions of computer programs. (COC 1)" },
+"Device Driver": { full: "Hardware Device Driver", meaning: "Software that allows communication between the operating system and hardware. (COC 1)" },
+"Device Manager": { full: "Device Manager", meaning: "A system utility for viewing and managing installed hardware devices. (COC 1)" },
+"Diagnostic Software": { full: "Diagnostic Software", meaning: "A program used to detect and analyze hardware or software problems. (COC 1)" },
+"Diagnostic Tool": { full: "System Diagnostic Tool", meaning: "Software or hardware used to identify and troubleshoot system errors. (COC 1)" },
+"Disassembly": { full: "Computer Disassembly", meaning: "The careful process of removing and separating computer parts. (COC 1)" },
+"Disk Management": { full: "Disk Management Utility", meaning: "A system tool used to partition and format storage drives. (COC 1)" },
+"Driver": { full: "Device Driver", meaning: "Software that enables communication between the operating system and hardware. (COC 1)" },
+"Dust Filter": { full: "Air Dust Filter", meaning: "A mesh component that prevents dust from entering the computer case. (COC 1)" },
+"Electrical Safety": { full: "Electrical Safety Practice", meaning: "A set of procedures to prevent electrical hazards. (COC 1)" },
+"ESD Strap": { full: "Electrostatic Discharge Strap", meaning: "A wrist strap worn by technicians to prevent electrostatic damage. (COC 1)" },
+"Expansion Slot": { full: "Expansion Slot", meaning: "A slot on the motherboard that allows installation of additional hardware cards. (COC 1)" },
+"exFAT": { full: "Extended File Allocation Table", meaning: "A modern file system optimized for flash drives and large files. (COC 1)" },
+"FAT32": { full: "File Allocation Table 32", meaning: "A file system compatible with multiple operating systems. (COC 1)" },
+"File System": { full: "File System", meaning: "A structure used by the operating system to organize and manage data on storage devices. (COC 1)" },
+"Firmware": { full: "Embedded Firmware", meaning: "Software permanently programmed into a hardware device. (COC 1)" },
+"GPU": { full: "Graphics Processing Unit", meaning: "A processor responsible for rendering images and graphics. (COC 1)" },
+"Grounding": { full: "Electrical Grounding", meaning: "The process of connecting an electrical system to the earth to prevent electric shock. (COC 1)" },
+"HDD": { full: "Hard Disk Drive", meaning: "A magnetic storage device used to store operating systems, applications, and files. (COC 1)" },
+"Heat Sink": { full: "Heat Sink", meaning: "A component that dissipates heat away from the CPU or GPU to prevent overheating. (COC 1)" },
+"HDMI Port": { full: "High-Definition Multimedia Interface Port", meaning: "Used to transmit high-definition video and audio signals. (COC 1)" },
+"Jumper": { full: "Jumper Connector", meaning: "A small connector used to configure hardware settings on the motherboard. (COC 1)" },
+"Keyboard": { full: "Computer Keyboard", meaning: "An input device used to enter text and execute commands. (COC 1)" },
+"Linux OS": { full: "Linux Operating System", meaning: "An open-source OS known for flexibility and stability. (COC 1)" },
+"Live CD": { full: "Live Operating System CD", meaning: "A bootable CD that allows the use of an OS without installation. (COC 1)" },
+"macOS": { full: "Macintosh Operating System", meaning: "Apple’s proprietary operating system for Mac computers. (COC 1)" },
+"Microphone": { full: "Microphone", meaning: "An input device that captures and converts sound waves into electrical signals. (COC 1)" },
+"Monitor": { full: "Computer Monitor", meaning: "An output device that displays visual information generated by the computer. (COC 1)" },
+"Motherboard": { full: "Motherboard", meaning: "The primary circuit board that connects and allows communication between all computer components. (COC 1)" },
+"Motherboard Standoff": { full: "Brass Standoff", meaning: "A spacer that prevents the motherboard from touching the metal case. (COC 1)" },
+"Mouse": { full: "Computer Mouse", meaning: "A pointing device used to interact with the computer interface. (COC 1)" },
+"Multimeter": { full: "Digital Multimeter", meaning: "An electrical instrument used to measure voltage, current, and resistance. (COC 1)" },
+"Network Interface Card": { full: "Network Interface Card (NIC)", meaning: "Hardware that allows a computer to connect to a network. (COC 1)" },
+"Northbridge": { full: "Northbridge Chip", meaning: "A motherboard chip that connects the CPU to memory and graphics components. (COC 1)" },
+"NTFS": { full: "New Technology File System", meaning: "A file system developed by Microsoft for Windows-based computers. (COC 1)" },
+"Operating System": { full: "Operating System (OS)", meaning: "Software that manages computer hardware and software resources. (COC 1)" },
+"Optical Drive": { full: "Optical Disk Drive", meaning: "Reads and writes data from CDs, DVDs, and Blu-ray discs. (COC 1)" },
+"Partition": { full: "Disk Partition", meaning: "A defined section of a storage drive used to organize and manage data. (COC 1)" },
+"PC Case": { full: "Personal Computer Case", meaning: "The outer shell that houses and protects all internal computer components. (COC 1)" },
+"Peripheral": { full: "Peripheral Device", meaning: "External hardware connected to a computer to enhance its functionality. (COC 1)" },
+"Peripheral Devices": { full: "Computer Peripherals", meaning: "External input or output devices connected to a computer system. (COC 1)" },
+"Phishing": { full: "Phishing Attack", meaning: "A fraudulent attempt to obtain sensitive information through deceptive emails or messages. (COC 1)" },
+"Ping Command": { full: "Packet Internet Groper Command", meaning: "A network tool used to test connectivity between two systems. (COC 1)" },
+"Pixel": { full: "Picture Element", meaning: "The smallest controllable element of a digital image or display. (COC 1)" },
+"Plug and Play": { full: "PnP Technology", meaning: "A feature that automatically detects and configures hardware devices. (COC 1)" },
+"Power Adapter": { full: "AC to DC Power Adapter", meaning: "A device that converts electrical energy to power electronic components. (COC 1)" },
+"Power Supply": { full: "Power Supply Unit", meaning: "A hardware component that provides regulated power to all internal parts of the computer. (COC 1)" },
+"Power Supply Tester": { full: "Power Supply Testing Tool", meaning: "A device used to check the output voltages of a power supply unit. (COC 1)" },
+"Printer": { full: "Computer Printer", meaning: "An output device that produces a physical copy of digital documents. (COC 1)" },
+"Processor": { full: "Computer Processor", meaning: "The central unit that interprets and executes instructions from hardware and software. (COC 1)" },
+"Protocol": { full: "Network Protocol", meaning: "A set of rules governing data communication between devices. (COC 1)" },
+"RAM": { full: "Random Access Memory", meaning: "Volatile memory used for temporary data storage during processing. (COC 1)" },
+"Read-Only Memory": { full: "ROM", meaning: "Non-volatile memory that stores essential startup instructions for the computer. (COC 1)" },
+"Reboot": { full: "Restart Operation", meaning: "The process of restarting a computer to refresh its operating system. (COC 1)" },
+"Registry": { full: "Windows Registry", meaning: "A database that stores configuration settings for the operating system. (COC 1)" },
+"Resolution": { full: "Display Resolution", meaning: "The number of pixels displayed on the screen horizontally and vertically. (COC 1)" },
+"Router": { full: "Network Router", meaning: "A device that forwards data packets between computer networks. (COC 1)" },
+"Safe Mode": { full: "Windows Safe Mode", meaning: "A diagnostic mode that loads only essential drivers for troubleshooting. (COC 1)" },
+"Scanner": { full: "Image Scanner", meaning: "An input device that converts physical documents into digital form. (COC 1)" },
+"SD Card": { full: "Secure Digital Card", meaning: "A small storage device used in cameras, smartphones, and computers. (COC 1)" },
+"Screwdriver": { full: "Phillips or Flat Screwdriver", meaning: "A hand tool used for tightening or loosening screws. (COC 1)" },
+"Serial Port": { full: "Communication Serial Port", meaning: "A port that transfers data one bit at a time between devices. (COC 1)" },
+"Server": { full: "Computer Server", meaning: "A system that provides data or services to other computers over a network. (COC 1)" },
+"Shutdown": { full: "System Power-Off", meaning: "The process of safely turning off a computer to prevent data loss. (COC 1)" },
+"Slot Cover": { full: "Expansion Slot Cover", meaning: "A removable plate that covers unused expansion slots on the computer case. (COC 1)" },
+"Software": { full: "Computer Software", meaning: "Programs and applications that instruct the computer on what to do. (COC 1)" },
+"Sound Card": { full: "Audio Interface Card", meaning: "A hardware component that processes audio signals for playback or recording. (COC 1)" },
+"Speaker": { full: "Computer Speaker", meaning: "An output device that converts digital signals into audible sound. (COC 1)" },
+"SSD": { full: "Solid State Drive", meaning: "A fast storage device that uses flash memory instead of spinning disks. (COC 1)" },
+"Static Electricity": { full: "Electrostatic Charge", meaning: "An imbalance of electric charges that can damage sensitive electronics. (COC 1)" },
+"Static Shield Bag": { full: "Anti-Static Bag", meaning: "A protective bag used to store electronic components safely. (COC 1)" },
+"Surge Protector": { full: "Power Surge Protector", meaning: "A device that safeguards electronics from voltage spikes. (COC 1)" },
+"System Unit": { full: "Computer System Unit", meaning: "The main body of a computer containing the motherboard, CPU, and other components. (COC 1)" },
+"Task Manager": { full: "System Task Manager", meaning: "A Windows utility used to monitor and manage running applications and processes. (COC 1)" },
+"Thermal Paste": { full: "Thermal Compound", meaning: "A material applied between the CPU and heat sink to enhance heat transfer. (COC 1)" },
+"Toolkit": { full: "Technician Toolkit", meaning: "A collection of tools used for assembling or repairing computers. (COC 1)" },
+"Troubleshooting": { full: "Computer Troubleshooting", meaning: "The process of identifying and solving computer hardware or software problems. (COC 1)" },
+"USB": { full: "Universal Serial Bus", meaning: "A standard interface for connecting peripheral devices to computers. (COC 1)" },
+"USB Flash Drive": { full: "Portable Flash Storage", meaning: "A removable data storage device that uses flash memory. (COC 1)" },
+"VGA Port": { full: "Video Graphics Array Port", meaning: "An analog connector used to connect display monitors. (COC 1)" },
+"Virus": { full: "Computer Virus", meaning: "Malicious software that replicates and spreads between systems. (COC 1)" },
+"Virus Scanner": { full: "Antivirus Program", meaning: "Software that detects and removes malicious programs from computers. (COC 1)" },
+"Web Browser": { full: "Internet Browser", meaning: "A program used to access and view websites on the internet. (COC 1)" },
+"Wi-Fi Adapter": { full: "Wireless Network Adapter", meaning: "A hardware device that enables a computer to connect to wireless networks. (COC 1)" },
+"Wireshark": { full: "Network Analyzer Tool", meaning: "A software used to monitor and analyze network traffic. (COC 1)" },
+"Windows OS": { full: "Microsoft Windows Operating System", meaning: "A graphical operating system developed by Microsoft Corporation. (COC 1)" },
+"Workstation": { full: "Professional Workstation", meaning: "A high-performance computer designed for technical or scientific tasks. (COC 1)" },
+"Worm": { full: "Computer Worm", meaning: "A self-replicating malware that spreads across networks without human interaction. (COC 1)" },
+"Zip File": { full: "Compressed Archive File", meaning: "A file that contains one or more files compressed to reduce size. (COC 1)" },
+"Zoom": { full: "Video Conferencing Software", meaning: "An online communication platform used for video meetings and collaboration. (COC 1)" },
+"Access Time": { full: "Data Access Time", meaning: "The time interval between a data request and its delivery from a storage device. (COC 1)" },
+"Adapter Card": { full: "Expansion Adapter Card", meaning: "A hardware component inserted into a slot to add functionality to a computer. (COC 1)" },
+"Airflow": { full: "Computer Airflow", meaning: "The movement of air through a computer case to regulate temperature. (COC 1)" },
+"Algorithm": { full: "Problem-Solving Algorithm", meaning: "A set of step-by-step instructions designed to perform a specific task. (COC 1)" },
+"Application Software": { full: "User Application Software", meaning: "Programs designed to perform specific user-oriented tasks. (COC 1)" },
+"Archive": { full: "Data Archive", meaning: "A collection of historical data stored for long-term retention. (COC 1)" },
+"Authentication": { full: "User Authentication", meaning: "The process of verifying the identity of a user or system. (COC 1)" },
+"Backup Utility": { full: "Data Backup Utility", meaning: "Software designed to automate the process of data backup. (COC 1)" },
+"Bandwidth": { full: "Network Bandwidth", meaning: "The maximum rate of data transfer across a network path. (COC 1)" },
+"Basic Input/Output System": { full: "BIOS", meaning: "Firmware that initializes and manages hardware during computer startup. (COC 1)" },
+"Batch File": { full: "Automated Batch File", meaning: "A script that executes a sequence of commands in an operating system. (COC 1)" },
+"Bit": { full: "Binary Digit", meaning: "The smallest unit of data in computing, representing 0 or 1. (COC 1)" },
+"Bridge": { full: "Network Bridge", meaning: "A device that connects and filters traffic between two network segments. (COC 1)" },
+"Buffer": { full: "Data Buffer", meaning: "A temporary memory area that stores data while it is being transferred. (COC 1)" },
+"Bus": { full: "Data Bus", meaning: "A communication system that transfers data between computer components. (COC 1)" },
+"Cache Memory": { full: "CPU Cache Memory", meaning: "A small, high-speed memory that stores frequently accessed data. (COC 1)" },
+"Cloud Storage": { full: "Online Cloud Storage", meaning: "A service that stores digital data on remote servers accessed via the internet. (COC 1)" },
+"Cluster": { full: "Disk Cluster", meaning: "The smallest allocatable unit of disk space in a file system. (COC 1)" },
+"Command Prompt": { full: "Windows Command Prompt", meaning: "A text-based interface used to execute system commands. (COC 1)" },
+"Compression": { full: "Data Compression", meaning: "The process of reducing file size to save storage space or transfer time. (COC 1)" },
+"Configuration": { full: "System Configuration", meaning: "The arrangement and setup of hardware and software components. (COC 1)" },
+"CPU Socket": { full: "Processor Socket", meaning: "The connector on the motherboard that holds the CPU securely. (COC 1)" },
+"Crash": { full: "System Crash", meaning: "A sudden failure that causes the computer or program to stop functioning properly. (COC 1)" },
+"Cursor": { full: "Text Cursor", meaning: "A movable indicator on the screen showing where user input will appear. (COC 1)" },
+"Data Bus": { full: "System Data Bus", meaning: "A pathway that transfers data between computer components. (COC 1)" },
+"Database": { full: "Structured Database", meaning: "An organized collection of data stored and managed electronically. (COC 1)" },
+"Defragmentation": { full: "Disk Defragmentation", meaning: "A process that reorganizes fragmented data on a disk to improve performance. (COC 1)" },
+"Device Manager": { full: "Windows Device Manager", meaning: "A utility used to view and manage hardware connected to the computer. (COC 1)" },
+"Directory": { full: "File Directory", meaning: "A folder used to organize files and subfolders in a storage system. (COC 1)" },
+"Disk Cleanup": { full: "System Disk Cleanup", meaning: "A utility that removes temporary and unnecessary files to free up space. (COC 1)" },
+"Disk Drive": { full: "Data Disk Drive", meaning: "A device that reads and writes data on magnetic or optical disks. (COC 1)" },
+"Domain": { full: "Network Domain", meaning: "A group of computers under a single administration and security policy. (COC 1)" },
+"Download": { full: "File Download", meaning: "The process of receiving data from a remote system to a local device. (COC 1)" },
+"Driver Update": { full: "Device Driver Update", meaning: "Installing the latest version of software that manages hardware functionality. (COC 1)" },
+"Encryption": { full: "Data Encryption", meaning: "The process of converting readable data into an unreadable format to protect it. (COC 1)" },
+"Ethernet Cable": { full: "Network Ethernet Cable", meaning: "A cable that connects devices within a local area network. (COC 1)" },
+"Execution": { full: "Program Execution", meaning: "The process of running or performing program instructions. (COC 1)" },
+"Expansion Slot": { full: "Motherboard Expansion Slot", meaning: "A connector that allows installation of additional hardware cards. (COC 1)" },
+"File Extension": { full: "Filename Extension", meaning: "The suffix that identifies the file type and associated program. (COC 1)" },
+"Firewall": { full: "Network Firewall", meaning: "A system that monitors and controls incoming and outgoing network traffic. (COC 1)" },
+"Flash Memory": { full: "Non-Volatile Flash Memory", meaning: "A type of memory that retains data even without power. (COC 1)" },
+"Folder": { full: "File Folder", meaning: "A digital container used to organize and store multiple files. (COC 1)" },
+"Font": { full: "Text Font", meaning: "A design and style of text used in documents and interfaces. (COC 1)" },
+"Gateway": { full: "Network Gateway", meaning: "A device that connects different networks and manages communication between them. (COC 1)" },
+"Graphical User Interface": { full: "GUI", meaning: "A visual way of interacting with computers using icons and windows. (COC 1)" },
+"Hardware": { full: "Computer Hardware", meaning: "The physical components of a computer system. (COC 1)" },
+"Heat Sink": { full: "Processor Heat Sink", meaning: "A metal component that dissipates heat from the CPU. (COC 1)" },
+"Host Computer": { full: "Main Host Computer", meaning: "A central computer that provides services to other systems or clients. (COC 1)" },
+"Hot Swapping": { full: "Hot-Swap Functionality", meaning: "The ability to replace hardware components without shutting down the system. (COC 1)" },
+"Icon": { full: "Graphical Icon", meaning: "A visual symbol representing a file, program, or function. (COC 1)" },
+"Input Device": { full: "Computer Input Device", meaning: "A hardware component used to enter data or commands into a computer. (COC 1)" },
+"Interface": { full: "User Interface", meaning: "A point of interaction between a user and a computer system. (COC 1)" },
+"Internet Protocol": { full: "IP", meaning: "A communication protocol that defines how data is sent over the internet. (COC 1)" },
+"Iteration": { full: "Loop Iteration", meaning: "The repetition of a process or instruction in computing. (COC 1)" },
+"Keyboard": { full: "Computer Keyboard", meaning: "An input device consisting of keys used to enter data and commands. (COC 1)" },
+"LAN": { full: "Local Area Network", meaning: "A network that connects computers within a limited geographical area. (COC 1)" },
+"Latency": { full: "Network Latency", meaning: "The delay between sending and receiving data across a network. (COC 1)" },
+"Library": { full: "Software Library", meaning: "A collection of precompiled routines used by programs. (COC 1)" },
+"Link": { full: "Hyperlink", meaning: "A clickable element that directs the user to another document or webpage. (COC 1)" },
+"Load Balancer": { full: "Network Load Balancer", meaning: "A system that distributes network traffic evenly across multiple servers. (COC 1)" },
+"Login Credentials": { full: "User Login Credentials", meaning: "The combination of username and password required for authentication. (COC 1)" },
+"Mainframe": { full: "Mainframe Computer", meaning: "A large, powerful computer used for critical applications and data processing. (COC 1)" },
+"Malware": { full: "Malicious Software", meaning: "Any program intentionally designed to cause damage to a computer system. (COC 1)" },
+"Memory Slot": { full: "RAM Slot", meaning: "A connector on the motherboard where memory modules are installed. (COC 1)" },
+"Micron": { full: "Micrometer Unit", meaning: "A unit of measurement used to express the thickness of semiconductor layers. (COC 1)" },
+"Modem": { full: "Modulator-Demodulator", meaning: "A device that converts digital data to analog signals and vice versa for communication. (COC 1)" },
+"Monitor": { full: "Computer Monitor", meaning: "An output device that displays text and graphics generated by a computer. (COC 1)" },
+"Motherboard": { full: "Main Circuit Board", meaning: "The primary board that connects and integrates all computer components. (COC 1)" },
+"Network Adapter": { full: "Network Interface Card", meaning: "A hardware component that enables a computer to connect to a network. (COC 1)" },
+"Network Cable": { full: "Ethernet Network Cable", meaning: "A cable that transmits data between network devices. (COC 1)" },
+"Network Interface": { full: "Computer Network Interface", meaning: "A point of connection between a computer and a network. (COC 1)" },
+"Network Topology": { full: "LAN Topology", meaning: "The physical or logical arrangement of a network’s components. (COC 1)" },
+"Node": { full: "Network Node", meaning: "Any active device connected to a network, such as a computer or printer. (COC 1)" },
+"Output Device": { full: "Computer Output Device", meaning: "A hardware component that displays or transmits processed data to the user. (COC 1)" },
+"Overclocking": { full: "CPU Overclocking", meaning: "The practice of increasing a processor’s speed beyond its default setting. (COC 1)" },
+"Patch": { full: "Software Patch", meaning: "A small update designed to fix or improve existing software. (COC 1)" },
+"Peripheral Component": { full: "External Peripheral Component", meaning: "An external hardware part connected to a computer to expand functionality. (COC 1)" },
+"Pixel Density": { full: "Display Pixel Density", meaning: "The number of pixels per inch on a display screen. (COC 1)" },
+"Port": { full: "Computer Port", meaning: "An interface or connection point for external devices. (COC 1)" },
+"Power Management": { full: "System Power Management", meaning: "The process of controlling power consumption in computing devices. (COC 1)" },
+"Power Surge": { full: "Electrical Power Surge", meaning: "A sudden increase in voltage that can damage electronic components. (COC 1)" },
+"Processor Speed": { full: "CPU Clock Speed", meaning: "The rate at which a processor executes instructions. (COC 1)" },
+"Program": { full: "Software Program", meaning: "A set of coded instructions that perform a specific task on a computer. (COC 1)" },
+"Protocol Address": { full: "IP Address", meaning: "A numerical label assigned to each device connected to a network. (COC 1)" },
+"System Boot": { full: "System Boot", meaning: "The process of starting up a computer and loading the operating system. (COC 1)" },
+"Backup": { full: "Backup", meaning: "A copy of important data made to prevent loss in case of system failure. (COC 1)" },
+"Restore": { full: "Restore", meaning: "To bring back data or settings from a backup. (COC 1)" },
+"Device Manager": { full: "Device Manager", meaning: "A Windows tool used to view and control hardware attached to the computer. (COC 1)" },
+"Tast Manager": { full: "Task Manager", meaning: "A system utility used to monitor running applications, processes, and system performance. (COC 1)" },
+"Power Supply": { full: "Power Supply", meaning: "Provides electrical energy to all computer components. (COC 1)" },
+"Processor Speed": { full: "Processor Speed", meaning: "Indicates how fast the CPU can execute instructions, measured in GHz. (COC 1)" },
+"RAM Slot": { full: "RAM Slot", meaning: "A socket on the motherboard where RAM modules are installed. (COC 1)" },
+"Storage Device": { full: "Storage Device", meaning: "Hardware used to save data permanently or temporarily, such as SSD or HDD. (COC 1)" },
+"Peripheral Device": { full: "Peripheral Device", meaning: "External hardware like printers, scanners, or keyboards that connect to a computer. (COC 1)" },
+"Input Device": { full: "Input Device", meaning: "Hardware that sends data to a computer, such as a mouse or keyboard. (COC 1)" },
+"Output Device": { full: "Output Device", meaning: "Hardware that displays or outputs processed data, like monitors or printers. (COC 1)" },
+"Cooling Fan": { full: "Cooling Fan", meaning: "Used to cool computer components and prevent overheating. (COC 1)" },
+"Heat Sink": { full: "Heat Sink", meaning: "A metal component that absorbs and disperses heat from the CPU or GPU. (COC 1)" },
+"System Unit": { full: "System Unit", meaning: "The main body of a desktop computer containing essential hardware. (COC 1)" },
+"Expansion Slot": { full: "Expansion Slot", meaning: "Allows additional cards like GPUs or network cards to be installed on the motherboard. (COC 1)" },
+"Operating System": { full: "Operating System", meaning: "Software that manages hardware and software resources, enabling user interaction. (COC 1)" },
+"File Extension": { full: "File Extension", meaning: "The suffix of a file name that indicates its type, such as .docx or .jpg. (COC 1)" },
+"System Restore": { full: "System Restore", meaning: "A Windows feature that allows recovery from system errors without losing personal data. (COC 1)" },
+"Safe Mode": { full: "Safe Mode", meaning: "A diagnostic startup mode in Windows used to fix system problems. (COC 1)" }
+};
+
+
+// ========== LOAD TERMS FROM ADMIN PAGE (COC1 ONLY) ==========
+const adminTermsCOC1 = JSON.parse(localStorage.getItem("addedTermsCOC1") || "[]");
+adminTermsCOC1.forEach(t => {
+    terms[t.term.toUpperCase()] = {
+        full: t.full || t.term,
+        meaning: t.meaning,
+        coc: "COC 1"
+    };
+});
+
+// ========== BUILD LOOKUP ==========
+let lookup = {};
+function rebuildLookup() {
+    lookup = {};
+    for (const key in terms) {
+        lookup[key.toUpperCase()] = key;
+        if (terms[key].full) lookup[terms[key].full.toUpperCase()] = key;
+    }
+}
+rebuildLookup();
+
+// ========== SEARCH FUNCTION ==========
+function searchTerm() {
+    const input = document.getElementById("termInput").value.trim().toUpperCase();
+    const key = lookup[input];
+    if (key && terms[key] && terms[key].coc === "COC 1") {
+        document.getElementById("output").innerHTML = `
+            <h3>${terms[key].full}</h3>
+            <p>${terms[key].meaning}</p>
+        `;
+    } else {
+        document.getElementById("output").innerHTML = "Term not found in COC 1.";
+    }
+}
+
+// ========== SPEAK BUTTON ==========
+function speakTerm() {
+    const text = document.getElementById("termInput").value;
+    if(!text) return alert("Enter a term to pronounce!");
+    let speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    window.speechSynthesis.speak(speech);
+}
+
+// ========== ADD TO FAVORITES ==========
+function addToFavorites() {
+    const term = document.getElementById("termInput").value.trim();
+    if (!term) return alert("Enter a term to add!");
+    let fav = JSON.parse(localStorage.getItem("favoritesCOC1") || "[]");
+    if (!fav.includes(term)) fav.push(term);
+    localStorage.setItem("favoritesCOC1", JSON.stringify(fav));
+    alert("Added to Favorites!");
+}
+
+// ========== SHOW LIST OF TERMS ==========
+function showList() {
+    let list = Object.keys(terms).map(k => `<li>${terms[k].full} – ${terms[k].meaning}</li>`).join("");
+    document.getElementById("output").innerHTML = `<ul>${list}</ul>`;
+}
+
+
+
+
+  const termInput    = document.getElementById("termInput");
+  const translateBtn = document.getElementById("translateBtn");
+  const speakBtn     = document.getElementById("speakBtn");
+  const listBtn      = document.getElementById("listBtn");
+  const favoriteBtn  = document.getElementById("favoriteBtn");
+  const outputDiv    = document.getElementById("output");
+  const listBox      = document.getElementById("listBox");
+
+  let currentTerm = "", currentFull = "";
+
+  translateBtn.addEventListener("click", () => {
+    const raw = termInput.value.trim();
+    if (!raw) return;
+    const alias = lookup[raw.toUpperCase()];
+    if (!alias) {
+      outputDiv.innerHTML = "<span style='color:red'>Term not found.</span>";
+      speakBtn.disabled = true;
+      favoriteBtn.disabled = true;
+      return;
+    }
+    const data = terms[alias];
+    currentTerm = alias;
+    currentFull = data.full;
+    outputDiv.innerHTML = `<strong>${alias}</strong><br><em>${data.full}</em><br>${data.meaning}`;
+    speakBtn.disabled = false;
+    favoriteBtn.disabled = false;
+  });
+
+  termInput.addEventListener("keyup", e => {
+    if (e.key === "Enter") translateBtn.click();
+  });
+
+  speakBtn.addEventListener("click", () => {
+    if (!currentFull) return;
+    const utter = new SpeechSynthesisUtterance(currentFull);
+    utter.lang = "en-US";
+    speechSynthesis.speak(utter);
+  });
+
+  listBtn.addEventListener("click", () => {
+  window.location.href = "COC1DICTIONARY.html";
+});
+
+  favoriteBtn.addEventListener("click", () => {
+    if (!currentTerm) return;
+    let favs = JSON.parse(localStorage.getItem("favorites")) || [];
+    if (!favs.includes(currentTerm)) favs.push(currentTerm);
+    localStorage.setItem("favorites", JSON.stringify(favs));
+    window.location.href = "Favoritelist.html";
+  });
+</script>
+<script>
+    // LOAD TERMS FROM LOCAL STORAGE
+    function loadTerms() {
+        let data = localStorage.getItem("termsData");
+        if (!data) {
+            return []; 
+        }
+        return JSON.parse(data);
+    }
+
+    const TERMS = loadTerms();
+
+    function translateTerm() {
+        const input = document.getElementById("searchInput").value.trim().toLowerCase();
+        let resultBox = document.getElementById("resultBox");
+
+        if (input === "") {
+            resultBox.innerHTML = "Please enter a term.";
+            return;
+        }
+
+        // SEARCH (case-insensitive)
+        const found = TERMS.find(t => t.term.toLowerCase() === input);
+
+        if (found) {
+            resultBox.innerHTML = `
+                <b>Term:</b> ${found.term}<br>
+                <b>Meaning:</b> ${found.meaning}
+            `;
+        } else {
+            resultBox.innerHTML = "Term not found.";
+        }
+    }
+
+    // ADD TO FAVORITES
+    function addToFavorites() {
+        const input = document.getElementById("searchInput").value.trim();
+        let favorites = JSON.parse(localStorage.getItem("favoriteList") || "[]");
+
+        favorites.push(input);
+        localStorage.setItem("favoriteList", JSON.stringify(favorites));
+        alert("Added to Favorites!");
+    }
+
+    // SPEAK
+    function speakTerm() {
+        const text = document.getElementById("searchInput").value;
+        const speech = new SpeechSynthesisUtterance(text);
+        speechSynthesis.speak(speech);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TerminoTech – Search Terms</title>
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      text-align: center;
+      padding: 20px;
+      max-width: 480px;
+      margin: auto;
+    }
+    h1 {
+      font-size: 24px;
+      color: #2d7f2f;
+      margin-bottom: 15px;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    button {
+      display: block;
+      width: 90%;
+      margin: 6px auto;
+      padding: 12px;
+      background-color: #2d7f2f;
+      color: white;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .output {
+      margin-top: 20px;
+      text-align: left;
+      width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>TerminoTech – Search Terms</h1>
+  <input type="text" id="termInput" placeholder="Enter ICT Term">
+  <button onclick="translateTerm()">Translate</button>
+  <button onclick="pronounceTerm()">Pronounce</button>
+  <button onclick="addToFavorites()">Add to Favorites</button>
+  <button onclick="listTerms()">List of Terms</button>
+  <button onclick="goBack()">Back to Home</button>
+  
+
+  <div class="output" id="output"></div>
+
+  <script>
+    const ictTerms = {
+      // --- COC 1 ---
+      "HTML": { full:"HyperText Markup Language", meaning:"A markup language used to structure content on the web. It defines elements like headings, paragraphs, and links." },
+  "CSS": { full:"Cascading Style Sheets", meaning:"Used to style and layout web pages. It controls colors, fonts, and responsive designs." },
+  "JavaScript": { full:"JavaScript", meaning:"A programming language used to make web pages interactive (like buttons, sliders, and forms)." },
+  "Multimeter": { full:"Digital Multimeter", meaning:"A tool used to measure voltage, current, and resistance. Essential in diagnosing electrical issues in computers." },
+  "Screwdriver": { full:"Precision Screwdriver", meaning:"Used to open and assemble parts of computer hardware during repair and maintenance." },
+  "LAN Cable": { full:"Ethernet Cable", meaning:"Used to connect computers to a network for internet access or local data sharing." },
+  "Router": { full:"Network Router", meaning:"Distributes internet connections to multiple devices via LAN or Wi‑Fi." },
+  "IP Address": { full:"Internet Protocol Address", meaning:"A unique number assigned to each device connected to a network." },
+  "BIOS": { full:"Basic Input Output System", meaning:"The firmware that starts up your PC and prepares hardware before the OS loads." },
+  "RAM": { full:"Random Access Memory", meaning:"Temporary memory used to store data the computer is currently using. More RAM means better multitasking." },
+  "CPU": { full:"Central Processing Unit", meaning:"The brain of the computer that processes instructions from programs and software." },
+  "Motherboard": { full:"Main Circuit Board", meaning:"Holds and connects all the major components of the computer like CPU, RAM, and storage." },
+  "PSU": { full:"Power Supply Unit", meaning:"Converts electricity from a wall outlet into power the computer can use safely." },
+  "HDD": { full:"Hard Disk Drive", meaning:"A storage device that holds data permanently, such as the operating system and files." },
+  "SSD": { full:"Solid State Drive", meaning:"A faster storage device than HDD, with no moving parts. Improves boot and load times." },
+  "Antistatic Wrist Strap": { full:"Grounding Wrist Strap", meaning:"Worn to prevent electrostatic discharge that could damage computer components during repair." },
+  "Software": { full:"Application Software", meaning:"Programs installed on a computer, like browsers, word processors, or games." },
+  "Hardware": { full:"Physical Components", meaning:"The physical parts of a computer like the monitor, keyboard, motherboard, and hard drive." },
+  "Firewall": { full:"Security System", meaning:"Protects computers from unauthorized access by monitoring and controlling network traffic." },
+  "Ping": { full:"Packet Internet Groper", meaning:"A command used to test the speed or connectivity between two network devices." },
+
+      // --- COC 2 ---
+      "Command Prompt": {
+    full: "CMD",
+    meaning: "A command‑line interpreter used to execute commands in Windows."
+  },
+  "PowerShell": {
+    full: "Windows PowerShell",
+    meaning: "Advanced command shell and scripting language for task automation."
+  },
+  "Disk Management": {
+    full: "Disk Partition Tool",
+    meaning: "Utility for creating, deleting and formatting partitions."
+  },
+  "System Restore": {
+    full: "Windows Recovery Tool",
+    meaning: "Restores system files and settings to an earlier point in time."
+  },
+  "Device Manager": {
+    full: "Hardware Manager",
+    meaning: "Displays hardware devices and allows driver management."
+  },
+  "Safe Mode": {
+    full: "Diagnostic Boot Mode",
+    meaning: "Starts Windows with minimal drivers to help troubleshoot issues."
+  },
+  "CHKDSK": {
+    full: "Check Disk",
+    meaning: "Scans file system and repairs logical disk errors."
+  },
+  "SFC": {
+    full: "System File Checker",
+    meaning: "Scans and restores corrupted Windows system files."
+  },
+  "Bootrec": {
+    full: "Boot Recovery Tool",
+    meaning: "Repairs MBR, boot sector and BCD store."
+  },
+  "Task Manager": {
+    full: "Process Monitor",
+    meaning: "Monitors running apps, background processes and resource usage."
+  },
+  "Startup Repair": {
+    full: "Automatic Repair Tool",
+    meaning: "Fixes problems preventing Windows from booting."
+  },
+  "Registry Editor": {
+    full: "Regedit",
+    meaning: "Tool for viewing and editing the Windows Registry."
+  },
+  "BIOS Update": {
+    full: "Firmware Upgrade",
+    meaning: "Updates motherboard firmware for stability and new features."
+  },
+  "System Image Recovery": {
+    full: "Windows Backup Restore",
+    meaning: "Restores an entire system from a disk image."
+  },
+  "Partition": {
+    full: "Disk Partition",
+    meaning: "Logical division of a storage device into isolated sections."
+  },
+  "MBR": {
+    full: "Master Boot Record",
+    meaning: "First sector of a drive containing bootloader and partition table."
+  },
+  "UEFI": {
+    full: "Unified Extensible Firmware Interface",
+    meaning: "Modern replacement for BIOS with faster boot and secure boot."
+  },
+  "Dual Boot": {
+    full: "Multi‑OS Setup",
+    meaning: "Configuration that lets you choose between two operating systems at startup."
+  },
+  "Virtual Machine": {
+    full: "VM",
+    meaning: "Software emulation of a computer system running an OS."
+  },
+  "Hyper‑V": {
+    full: "Microsoft Virtualization Platform",
+    meaning: "Native hypervisor for creating and managing virtual machines."
+  },
+  "Multimeter": {
+    full: "Digital Multimeter",
+    meaning: "Measures voltage, current and resistance when servicing hardware."
+  },
+  "Cable Tester": {
+    full: "LAN Cable Tester",
+    meaning: "Verifies wiring and continuity of network cables."
+  },
+  "Screwdriver": {
+    full: "Precision Screwdriver",
+    meaning: "Used to open, assemble or replace PC components."
+  },
+
+      // --- COC 3 ---
+      "HTML5":          { full:"HTML5",                     meaning:"Latest major version of HTML introducing semantic tags, audio/video elements, and Canvas." },
+  "CSS3":           { full:"CSS3",                      meaning:"Latest CSS specification with features like Flexbox, Grid, animations and variables." },
+  "SVG":            { full:"Scalable Vector Graphics",  meaning:"XML-based vector image format for sharp graphics at any resolution." },
+  "Canvas":         { full:"HTML Canvas",               meaning:"Bitmap drawing area in HTML5 used for 2‑D games, graphs, and image editing." },
+  "WebGL":          { full:"Web Graphics Library",      meaning:"JavaScript API for rendering interactive 3‑D graphics in the browser using GPU." },
+  "React":          { full:"React JS",                  meaning:"JavaScript library for building user interfaces with components and virtual DOM." },
+  "Angular":        { full:"Angular Framework",         meaning:"Google‑maintained TypeScript framework for large‑scale web apps." },
+  "Vue":            { full:"Vue JS",                    meaning:"Progressive JavaScript framework focused on the view layer and reactivity." },
+  "Bootstrap":      { full:"Bootstrap CSS Framework",   meaning:"Popular CSS & JS toolkit for responsive, mobile‑first websites." },
+  "Tailwind":       { full:"Tailwind CSS",              meaning:"Utility‑first CSS framework for rapidly building custom designs." },
+  "SASS":           { full:"Syntactically Awesome Style Sheets", meaning:"CSS pre‑processor adding variables, nesting, mixins and functions." },
+  "LESS":           { full:"Leaner Style Sheets",       meaning:"CSS pre‑processor with variables and modularization." },
+  "TypeScript":     { full:"TypeScript",                meaning:"Superset of JavaScript adding static types and modern syntax." },
+  "Node.js":        { full:"Node JavaScript Runtime",   meaning:"Server‑side JavaScript runtime built on Chrome's V8 engine." },
+  "Express":        { full:"Express JS",                meaning:"Minimal Node.js web application framework for APIs and servers." },
+  "REST API":       { full:"Representational State Transfer API", meaning:"Architectural style for stateless web services using HTTP methods." },
+  "JSON":           { full:"JavaScript Object Notation", meaning:"Lightweight data‑interchange format easy for humans and machines to read/write." },
+  "AJAX":           { full:"Asynchronous JavaScript and XML", meaning:"Technique to fetch data in the background without reloading a page." },
+  "Fetch API":      { full:"Fetch API",                 meaning:"Modern JavaScript interface for making HTTP requests and handling promises." },
+  "Git":            { full:"Git Version Control",       meaning:"Distributed version‑control system for tracking code changes." },
+  "GitHub":         { full:"GitHub Platform",           meaning:"Cloud service for hosting Git repositories and collaboration." },
+  "GitLab":         { full:"GitLab Platform",           meaning:"DevOps lifecycle tool providing Git hosting and CI/CD pipelines." },
+  "Branch":         { full:"Git Branch",                meaning:"Parallel line of development in a Git repository." },
+  "Commit":         { full:"Git Commit",                meaning:"Snapshot of changes saved to a Git repository history." },
+  "Merge":          { full:"Git Merge",                 meaning:"Combines changes from different branches into one." },
+  "Pull Request":   { full:"Merge Request",             meaning:"Proposal to merge code into a branch, enabling review and discussion." },
+  "Docker":         { full:"Docker Container Platform", meaning:"Tool for packaging applications and dependencies into portable containers." },
+  "Container":      { full:"Software Container",        meaning:"Isolated runtime environment that bundles application code with its libraries." },
+  "Kubernetes":     { full:"Kubernetes",                meaning:"Open‑source system for automating deployment, scaling, and management of containerized apps." },
+  "CI/CD":          { full:"Continuous Integration / Continuous Deployment", meaning:"Practices that automate testing and deployment of code." },
+  "Webpack":        { full:"Webpack Module Bundler",    meaning:"Build tool that bundles JavaScript, CSS, images into optimized assets." },
+  "Babel":          { full:"Babel Transpiler",          meaning:"JavaScript compiler that converts modern JS/TS into browser‑compatible code." },
+  "NPM":            { full:"Node Package Manager",      meaning:"Default package manager for Node.js ecosystems." },
+  "Yarn":           { full:"Yarn Package Manager",      meaning:"Fast, secure JavaScript package manager alternative to NPM." },
+  "package.json":   { full:"Node Package Manifest",     meaning:"File listing project metadata, dependencies, and scripts for Node projects." },
+  "Figma":          { full:"Figma Design Tool",         meaning:"Browser‑based UI/UX design and prototyping platform for collaborative work." },
+  "Adobe XD":       { full:"Adobe Experience Design",   meaning:"Vector‑based UI/UX design and prototyping tool by Adobe." },
+  "Photoshop":      { full:"Adobe Photoshop",           meaning:"Industry‑standard raster graphics editor for images and digital art." },
+  "Illustrator":    { full:"Adobe Illustrator",         meaning:"Vector graphics editor used for logos, icons, and illustrations." },
+  "Premiere Pro":   { full:"Adobe Premiere Pro",        meaning:"Professional video editing software." },
+  "After Effects":  { full:"Adobe After Effects",       meaning:"Software for motion graphics and visual effects." },
+  "MP4":            { full:"MPEG‑4 Part 14",            meaning:"Digital multimedia container format for storing video and audio." },
+  "PNG":            { full:"Portable Network Graphics", meaning:"Raster image format supporting transparency and lossless compression." },
+  "JPEG":           { full:"Joint Photographic Experts Group", meaning:"Common lossy image format balancing quality and size." },
+  "GIF":            { full:"Graphics Interchange Format", meaning:"Image format supporting 256 colors and simple animations." },
+  "SVG (File)":     { full:"Scalable Vector Graphics File", meaning:"Vector image file rendered via XML; ideal for icons and logos." },
+  "MP3":            { full:"MPEG‑1 Audio Layer III",     meaning:"Popular lossy audio format (music, podcasts)." },
+  "WAV":            { full:"Waveform Audio File Format",  meaning:"Uncompressed audio format with high fidelity." },
+  "OGG":            { full:"Ogg Vorbis",                 meaning:"Open, patent‑free container often used for Vorbis audio." },
+  "Codec":          { full:"Coder‑Decoder",             meaning:"Software or hardware that compresses/decompresses audio or video." },
+  "FPS":            { full:"Frames Per Second",         meaning:"Number of frames displayed each second in video or animation." },
+  "Resolution":     { full:"Pixel Dimensions",          meaning:"Number of pixels in each dimension that can be displayed." },
+  "Aspect Ratio":   { full:"Width‑to‑Height Ratio",     meaning:"Proportional relationship between width and height of media." },
+  "Wireframe":      { full:"UI Wireframe",              meaning:"Basic schematic layout of a web page or app screen." },
+  "Mockup":         { full:"Design Mock‑up",            meaning:"High‑fidelity static design showing final look before coding." },
+  "Prototype":      { full:"Interactive Prototype",     meaning:"Clickable model simulating user flow for testing UX." },
+
+      // --- Others ---
+      "CSS": { full: "Cascading Style Sheets", meaning: "Used for styling web pages." },
+"LAN": { full: "Local Area Network", meaning: "Connects computers in a local area." },
+"WAN": { full: "Wide Area Network", meaning: "Covers large geographical areas." },
+"IP": { full: "Internet Protocol", meaning: "Addresses and routes data on networks." },
+"HTTP": { full: "Hypertext Transfer Protocol", meaning: "Transfers web content." },
+"HTTPS": { full: "Hypertext Transfer Protocol Secure", meaning: "Secure version of HTTP." },
+"RAM": { full: "Random Access Memory", meaning: "Temporary memory storage." },
+"ROM": { full: "Read-Only Memory", meaning: "Permanent memory storage." },
+"CPU": { full: "Central Processing Unit", meaning: "Brain of the computer." },
+"GUI": { full: "Graphical User Interface", meaning: "Visual way to interact with a device." },
+"USB": { full: "Universal Serial Bus", meaning: "Standard for connecting devices." },
+"OS": { full: "Operating System", meaning: "Manages computer hardware and software." },
+"URL": { full: "Uniform Resource Locator", meaning: "Address of a web page." },
+"ISP": { full: "Internet Service Provider", meaning: "Provides internet access." },
+"HTML": { full: "Hypertext Markup Language", meaning: "Creates web pages." },
+"DNS": { full: "Domain Name System", meaning: "Translates domain names to IP addresses." },
+"MAC Address": { full: "Media Access Control Address", meaning: "Unique device identifier." },
+"Firewall": { full: "Firewall", meaning: "Security system for networks." },
+"Cloud Computing": { full: "Cloud Computing", meaning: "Storing data on the internet." },
+"Server": { full: "Server", meaning: "Provides data/services to other computers." },
+"Bit": { full: "Binary Digit", meaning: "Smallest unit of data." },
+"Byte": { full: "Byte", meaning: "Group of 8 bits." },
+"Ethernet": { full: "Ethernet", meaning: "Wired networking technology." },
+"VPN": { full: "Virtual Private Network", meaning: "Secures private connections over public networks." }
+    };
+
+    function translateTerm() {
+      const term = document.getElementById("termInput").value.toUpperCase();
+      const output = document.getElementById("output");
+      if (ictTerms[term]) {
+        output.innerHTML = `
+          <strong>${term}</strong><br>
+          <em>${ictTerms[term].full}</em><br>
+          ${ictTerms[term].meaning}
+        `;
+      } else {
+        output.innerHTML = "Term not found.";
+      }
+    }
+
+    function pronounceTerm() {
+      const term = document.getElementById("termInput").value;
+      const utterance = new SpeechSynthesisUtterance(term);
+      speechSynthesis.speak(utterance);
+    }
+
+    function addToFavorites() {
+      const term = document.getElementById("termInput").value.toUpperCase();
+      if (ictTerms[term]) {
+        const existing = localStorage.getItem("favoritesAll") || "";
+        const updated = existing + `\n${term} - ${ictTerms[term].full} | ${ictTerms[term].meaning}`;
+        localStorage.setItem("favoritesAll", updated);
+        alert("Added to favorites!");
+      } else {
+        alert("Term not found.");
+      }
+    }
+
+    function listTerms() {
+      let list = "<h3>All Available ICT Terms:</h3><ul style='text-align:left;'>";
+      for (let key in ictTerms) {
+        list += `<li><strong>${key}</strong> – <em>${ictTerms[key].full}</em></li>`;
+      }
+      list += "</ul>";
+      document.getElementById("output").innerHTML = list;
+    }
+
+    function goBack() {
+      window.location.href = "home.html";
+    }
+  </script>
+</body>
+</html>

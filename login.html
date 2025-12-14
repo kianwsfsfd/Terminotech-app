@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #eaffea;
+        text-align: center;
+        padding: 40px;
+    }
+    .box {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        max-width: 350px;
+        margin: auto;
+        box-shadow: 0 0 8px #aaa;
+    }
+    input {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #555;
+    }
+    button {
+        width: 90%;
+        padding: 12px;
+        background: green;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>Admin Login</h2>
+
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="login()">LOGIN</button>
+</div>
+
+<script>
+    // ==== CHANGE PASSWORD HERE ====
+    const ADMIN_USERNAME = "Administrator";
+    const ADMIN_PASSWORD = "Admin123";
+    // ===============================
+
+    function login() {
+        let user = document.getElementById("username").value;
+        let pass = document.getElementById("password").value;
+
+        if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
+            window.location.href = "adminhomepage.html";
+        } else {
+            alert("Invalid username or password!");
+        }
+    }
+</script>
+
+</body>
+</html>

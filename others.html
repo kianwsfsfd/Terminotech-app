@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TerminoTech – Others ICT Terms Dictionary</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0fff0;
+      text-align: center;
+      padding: 24px;
+      max-width: 480px;
+      margin: auto;
+      animation: fadeIn 1s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+      color: #0b6b0b;
+      animation: fadeIn 1.2s ease-in;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 6px 4px;
+      width: 90%;
+      max-width: 340px;
+      transition: transform 0.2s ease, background-color 0.3s;
+    }
+    button {
+      background-color: #0a6c0a;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover:not(:disabled) {
+      transform: scale(1.05);
+      background-color: #0c7c0c;
+    }
+    button:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+    #output {
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: left;
+      background: #dfffdc;
+      padding: 12px;
+      border-radius: 6px;
+      animation: fadeIn 0.5s ease-in;
+    }
+    #listBox {
+      display: none;
+      text-align: left;
+      margin-top: 20px;
+      background: #ebffeb;
+      padding: 12px;
+      border-radius: 6px;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      padding: 6px 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>TerminoTech – Others ICT Terms Translator</h1>
+
+<input id="termInput" type="text" placeholder="Enter a ICT term..." />
+<br>
+<button id="translateBtn">Translate</button>
+<button id="speakBtn" disabled>Pronounce</button>
+<button id="favoriteBtn" disabled>Add to Favorites</button>
+<button id="listBtn">List of Terms</button>
+<button class="btn" onclick="window.location.href='cocselection.html'">back</button>
+
+<div id="output"></div>
+<div id="listBox"></div>
+
+<script>
+const terms = {
+  "CSS": { full: "Cascading Style Sheets", meaning: "Used for styling web pages." },
+  "LAN": { full: "Local Area Network", meaning: "Connects computers in a local area." },
+  "WAN": { full: "Wide Area Network", meaning: "Covers large geographical areas." },
+  "IP": { full: "Internet Protocol", meaning: "Addresses and routes data on networks." },
+  "HTTP": { full: "Hypertext Transfer Protocol", meaning: "Transfers web content." },
+  "HTTPS": { full: "Hypertext Transfer Protocol Secure", meaning: "Secure version of HTTP." },
+  "RAM": { full: "Random Access Memory", meaning: "Temporary memory storage." },
+  "ROM": { full: "Read-Only Memory", meaning: "Permanent memory storage." },
+  "CPU": { full: "Central Processing Unit", meaning: "Brain of the computer." },
+  "GUI": { full: "Graphical User Interface", meaning: "Visual way to interact with a device." },
+  "USB": { full: "Universal Serial Bus", meaning: "Standard for connecting devices." },
+  "OS": { full: "Operating System", meaning: "Manages computer hardware and software." },
+  "URL": { full: "Uniform Resource Locator", meaning: "Address of a web page." },
+  "ISP": { full: "Internet Service Provider", meaning: "Provides internet access." },
+  "HTML": { full: "Hypertext Markup Language", meaning: "Creates web pages." },
+  "DNS": { full: "Domain Name System", meaning: "Translates domain names to IP addresses." },
+  "MAC Address": { full: "Media Access Control Address", meaning: "Unique device identifier." },
+  "Firewall": { full: "Firewall", meaning: "Security system for networks." },
+  "Cloud Computing": { full: "Cloud Computing", meaning: "Storing data on the internet." },
+  "Server": { full: "Server", meaning: "Provides data/services to other computers." },
+  "Bit": { full: "Binary Digit", meaning: "Smallest unit of data." },
+  "Byte": { full: "Byte", meaning: "Group of 8 bits." },
+  "Ethernet": { full: "Ethernet", meaning: "Wired networking technology." },
+  "VPN": { full: "Virtual Private Network", meaning: "Secures private connections over public networks." }
+};
+
+const lookup = {};
+for (const k in terms) {
+  lookup[k.toUpperCase()]             = k;
+  lookup[terms[k].full.toUpperCase()] = k;
+}
+
+const termInput   = document.getElementById("termInput");
+const translateBtn= document.getElementById("translateBtn");
+const speakBtn    = document.getElementById("speakBtn");
+const listBtn     = document.getElementById("listBtn");
+const favoriteBtn = document.getElementById("favoriteBtn");
+const outputDiv   = document.getElementById("output");
+const listBox     = document.getElementById("listBox");
+
+let currentTerm = "", currentFull = "";
+
+translateBtn.addEventListener("click", () => {
+  const raw = termInput.value.trim();
+  if (!raw) return;
+  const alias = lookup[raw.toUpperCase()];
+  if (!alias) {
+    outputDiv.innerHTML = "<span style='color:red'>Term not found.</span>";
+    speakBtn.disabled = true;
+    favoriteBtn.disabled = true;
+    return;
+  }
+  const data = terms[alias];
+  currentTerm = alias;
+  currentFull = data.full;
+  outputDiv.innerHTML = `<strong>${alias}</strong><br><em>${data.full}</em><br>${data.meaning}`;
+  speakBtn.disabled = false;
+  favoriteBtn.disabled = false;
+});
+
+termInput.addEventListener("keyup", e => { if (e.key === "Enter") translateBtn.click(); });
+
+speakBtn.addEventListener("click", () => {
+  if (!currentFull) return;
+  const utter = new SpeechSynthesisUtterance(currentFull);
+  utter.lang = "en-US";
+  speechSynthesis.speak(utter);
+});
+
+listBtn.addEventListener("click", () => {
+  window.location.href = "OTHERSDICTIONARY.html";
+});
+favoriteBtn.addEventListener("click", () => {
+  if (!currentTerm) return;
+  let favs = JSON.parse(localStorage.getItem("favorites")) || [];
+  if (!favs.includes(currentTerm)) favs.push(currentTerm);
+  localStorage.setItem("favorites", JSON.stringify(favs));
+  window.location.href = "Favoritelist.html";
+});
+</script>
+
+</body>
+</html>
+

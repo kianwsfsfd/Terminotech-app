@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TerminoTech – COC 3 Dictionary</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0fff0;
+      text-align: center;
+      padding: 24px;
+      margin: auto;
+      max-width: 480px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    h1 {
+      color: #0b6b0b;
+      margin-bottom: 20px;
+      animation: slideDown 0.6s ease-in-out;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 6px auto;
+      width: 90%;
+      max-width: 340px;
+      display: block;
+      border-radius: 5px;
+    }
+
+    input {
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #0a6c0a;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: scale(1.03);
+      background-color: #095b09;
+    }
+
+    button:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+
+    #output {
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: left;
+      background: #dfffdc;
+      padding: 12px;
+      border-radius: 6px;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    #listBox {
+      display: none;
+      text-align: left;
+      margin-top: 20px;
+      background: #ebffeb;
+      padding: 12px;
+      border-radius: 6px;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      font-size: 15px;
+    }
+
+    li {
+      padding: 6px 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-15px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>TerminoTech – COC 3 Translator</h1>
+
+<input id="termInput" type="text" placeholder="Enter a COC 3 term..." />
+<button id="translateBtn">Find</button>
+<button id="speakBtn" disabled>Pronounce</button>
+<button id="favoriteBtn" disabled>Add to Favorites</button>
+<button id="listBtn">List of Terms</button>
+<button class="btn" onclick="window.location.href='cocselection.html'">back</button>
+
+<div id="output"></div>
+<div id="listBox"></div>
+
+<script>
+const terms = {
+  "Access Control": { full: "Access Control", meaning: "A security technique that regulates who or what can view or use resources in a computing environment. (COC 3)" },
+  "Account Lockout": { full: "Account Lockout", meaning: "A security feature that disables a user account after multiple failed login attempts. (COC 3)" },
+  "Active Directory": { full: "Active Directory", meaning: "A Microsoft directory service that manages users, groups, and resources in a network. (COC 3)" },
+  "Administrator Account": { full: "Administrator Account", meaning: "A user account with full permissions to configure and manage system settings. (COC 3)" },
+  "Antivirus Server": { full: "Antivirus Server", meaning: "A centralized system that provides virus protection across networked computers. (COC 3)" },
+  "Apache": { full: "Apache", meaning: "A widely used open-source web server software. (COC 3)" },
+  "Application Server": { full: "Application Server", meaning: "A server that hosts and runs specific business or web applications. (COC 3)" },
+  "Audit Policy": { full: "Audit Policy", meaning: "A configuration that defines which events are recorded in the security log. (COC 3)" },
+  "Authentication": { full: "Authentication", meaning: "The process of verifying a user’s identity before granting access. (COC 3)" },
+  "Authorization": { full: "Authorization", meaning: "The process of granting or denying user access to specific resources. (COC 3)" },
+  "Backup Schedule": { full: "Backup Schedule", meaning: "A planned routine for regularly backing up important data. (COC 3)" },
+  "Backup Server": { full: "Backup Server", meaning: "A server used to store and manage copies of data for recovery purposes. (COC 3)" },
+  "Backup Verification": { full: "Backup Verification", meaning: "The process of ensuring that backup files are valid and restorable. (COC 3)" },
+  "Blade Server": { full: "Blade Server", meaning: "A compact modular server designed to fit into a rack chassis. (COC 3)" },
+  "Certificate Authority": { full: "Certificate Authority", meaning: "An organization that issues and verifies digital security certificates. (COC 3)" },
+  "Clustering": { full: "Clustering", meaning: "A technique that links multiple servers to act as a single system for reliability. (COC 3)" },
+  "Client": { full: "Client", meaning: "A device or application that requests services from a server. (COC 3)" },
+  "Client-Server Model": { full: "Client-Server Model", meaning: "A network model in which clients request and servers provide services. (COC 3)" },
+  "Command Line Interface": { full: "Command Line Interface", meaning: "A text-based interface used to execute server commands. (COC 3)" },
+  "Containerization": { full: "Containerization", meaning: "A method of packaging software and its dependencies for consistent deployment. (COC 3)" },
+  "CPU Utilization": { full: "CPU Utilization", meaning: "The percentage of processing capacity currently in use on a server. (COC 3)" },
+  "Data Center": { full: "Data Center", meaning: "A facility that houses servers and critical IT infrastructure. (COC 3)" },
+  "Database Server": { full: "Database Server", meaning: "A server that stores, manages, and provides access to databases. (COC 3)" },
+  "Dedicated Server": { full: "Dedicated Server", meaning: "A physical server exclusively used by one client or application. (COC 3)" },
+  "DHCP Server": { full: "DHCP Server", meaning: "A server that automatically assigns IP addresses to devices on a network. (COC 3)" },
+  "Differential Backup": { full: "Differential Backup", meaning: "A backup that saves changes made since the last full backup. (COC 3)" },
+  "Directory Service": { full: "Directory Service", meaning: "A system that stores and manages information about network resources. (COC 3)" },
+  "Disaster Recovery Plan": { full: "Disaster Recovery Plan", meaning: "A documented strategy to restore systems after a major failure. (COC 3)" },
+  "DNS Server": { full: "DNS Server", meaning: "A server that translates domain names into IP addresses. (COC 3)" },
+  "Docker": { full: "Docker", meaning: "A popular platform for creating, deploying, and managing containers. (COC 3)" },
+  "Domain": { full: "Domain", meaning: "A centralized network environment managed by a domain controller. (COC 3)" },
+  "Domain Controller": { full: "Domain Controller", meaning: "A server responsible for managing user authentication and policies in a domain. (COC 3)" },
+  "Downtime": { full: "Downtime", meaning: "A period when a server or service is unavailable. (COC 3)" },
+  "Encryption Key": { full: "Encryption Key", meaning: "A string of data used to encrypt or decrypt information. (COC 3)" },
+  "Environmental Monitoring": { full: "Environmental Monitoring", meaning: "The process of tracking temperature and humidity in a server room. (COC 3)" },
+  "Event Viewer": { full: "Event Viewer", meaning: "A Windows tool for viewing system and security logs. (COC 3)" },
+  "Failover": { full: "Failover", meaning: "The automatic transfer to a standby system in case of failure. (COC 3)" },
+  "File Server": { full: "File Server", meaning: "A server that stores and manages files for network users. (COC 3)" },
+  "Firewall Policy": { full: "Firewall Policy", meaning: "A set of rules that defines which network traffic is allowed or denied. (COC 3)" },
+  "Firewall Rule": { full: "Firewall Rule", meaning: "A configuration setting that controls inbound and outbound network traffic. (COC 3)" },
+  "Full Backup": { full: "Full Backup", meaning: "A backup method that copies all files every time it runs. (COC 3)" },
+  "FQDN": { full: "FQDN (Fully Qualified Domain Name)", meaning: "The complete domain name of a specific host in the DNS hierarchy. (COC 3)" },
+  "Generator": { full: "Generator", meaning: "A backup power device that provides electricity during extended outages. (COC 3)" },
+  "Group Policy": { full: "Group Policy", meaning: "A feature in Windows that manages user and computer configurations. (COC 3)" },
+  "GPO": { full: "Group Policy Object (GPO)", meaning: "A set of policy settings that control system configurations. (COC 3)" },
+  "Guest Account": { full: "Guest Account", meaning: "A temporary, limited-access user account on a system. (COC 3)" },
+  "Guest Machine": { full: "Guest Machine", meaning: "A virtual machine instance running within a host system. (COC 3)" },
+  "GUI": { full: "Graphical User Interface", meaning: "A visual interface that allows users to interact with system functions. (COC 3)" },
+  "Host Machine": { full: "Host Machine", meaning: "The physical computer that runs one or more virtual machines. (COC 3)" },
+  "Hypervisor": { full: "Hypervisor", meaning: "Software that creates and manages virtual machines. (COC 3)" },
+  "IIS": { full: "Internet Information Services", meaning: "A web server software created by Microsoft for hosting websites and web applications. (COC 3)" },
+  "Incremental Backup": { full: "Incremental Backup", meaning: "A backup method that saves only files changed since the last backup. (COC 3)" },
+  "IP Configuration": { full: "IP Configuration", meaning: "The setup of IP addresses, subnet masks, and gateways on a server. (COC 3)" },
+  "IPSec": { full: "Internet Protocol Security", meaning: "A protocol suite for securing IP communications by authenticating and encrypting each packet. (COC 3)" },
+  "Job Scheduler": { full: "Job Scheduler", meaning: "A system tool that automates and schedules repetitive tasks. (COC 3)" },
+  "Kerberos": { full: "Kerberos Authentication Protocol", meaning: "A secure network authentication protocol using secret-key cryptography. (COC 3)" },
+  "LDAP": { full: "Lightweight Directory Access Protocol", meaning: "A protocol used to access and manage directory information services over an IP network. (COC 3)" },
+  "Load Balancer": { full: "Load Balancer", meaning: "A device or software that distributes network traffic across multiple servers. (COC 3)" },
+  "Load Balancing": { full: "Load Balancing", meaning: "A process of distributing workloads to optimize resource use and performance. (COC 3)" },
+  "Local Server": { full: "Local Server", meaning: "A server hosted within the same physical network or facility. (COC 3)" },
+  "Log Management": { full: "Log Management", meaning: "The process of collecting, storing, and analyzing log data for system monitoring. (COC 3)" },
+  "Malware Scanner": { full: "Malware Scanner", meaning: "A tool that detects and removes malicious software from servers. (COC 3)" },
+  "Managed Server": { full: "Managed Server", meaning: "A server maintained by a third-party provider for performance and security. (COC 3)" },
+  "Monitoring Tools": { full: "Server Monitoring Tools", meaning: "Software used to observe server health, uptime, and performance. (COC 3)" },
+  "NAS": { full: "Network Attached Storage", meaning: "A device that provides centralized storage accessible to networked computers. (COC 3)" },
+  "Network Policy": { full: "Network Policy", meaning: "A set of rules that governs how network resources are accessed and used. (COC 3)" },
+  "Network Server": { full: "Network Server", meaning: "A server that provides services such as file sharing and email across a network. (COC 3)" },
+  "Network Topology": { full: "Network Topology", meaning: "The physical or logical layout of interconnected network devices. (COC 3)" },
+  "NIC Teaming": { full: "Network Interface Card Teaming", meaning: "Combining multiple network adapters to increase bandwidth and redundancy. (COC 3)" },
+  "NTP Server": { full: "Network Time Protocol Server", meaning: "A server that synchronizes clocks across network devices. (COC 3)" },
+  "Operating System Deployment": { full: "Operating System Deployment", meaning: "The process of installing and configuring an OS across multiple systems. (COC 3)" },
+  "Patch Management": { full: "Patch Management", meaning: "The process of updating software to fix bugs and security vulnerabilities. (COC 3)" },
+  "Permission Settings": { full: "Permission Settings", meaning: "Configurations that define what users can access or modify. (COC 3)" },
+  "Physical Server": { full: "Physical Server", meaning: "A single hardware machine that runs server software and hosts resources. (COC 3)" },
+  "Ping Test": { full: "Ping Test", meaning: "A network utility used to verify connectivity between systems. (COC 3)" },
+  "Port Forwarding": { full: "Port Forwarding", meaning: "A method that redirects communication requests from one address to another. (COC 3)" },
+  "Power Management": { full: "Power Management", meaning: "Controlling the energy usage and power states of server hardware. (COC 3)" },
+  "Proxy Server": { full: "Proxy Server", meaning: "A server that acts as an intermediary between users and the internet. (COC 3)" },
+  "RAID": { full: "Redundant Array of Independent Disks", meaning: "A method of combining multiple drives for data redundancy and performance. (COC 3)" },
+  "RAID Controller": { full: "RAID Controller", meaning: "Hardware or software that manages RAID configurations. (COC 3)" },
+  "Remote Access": { full: "Remote Access", meaning: "The ability to connect and control a system from another location. (COC 3)" },
+  "Remote Desktop": { full: "Remote Desktop Protocol (RDP)", meaning: "A Microsoft protocol that allows remote access to a graphical desktop environment. (COC 3)" },
+  "Replication": { full: "Data Replication", meaning: "The process of copying and maintaining database or file data across systems. (COC 3)" },
+  "Resource Monitor": { full: "Resource Monitor", meaning: "A system tool used to track CPU, memory, disk, and network usage. (COC 3)" },
+  "Restore Point": { full: "Restore Point", meaning: "A system state backup used to revert a server to a previous configuration. (COC 3)" },
+  "Root Directory": { full: "Root Directory", meaning: "The top-level folder in a file system hierarchy. (COC 3)" },
+  "Router Configuration": { full: "Router Configuration", meaning: "The process of setting up a router’s IP, DNS, and security settings. (COC 3)" },
+  "SAN": { full: "Storage Area Network", meaning: "A high-speed network that provides block-level data storage. (COC 3)" },
+  "Scalability": { full: "Scalability", meaning: "The ability of a system to handle increasing workloads efficiently. (COC 3)" },
+  "Security Audit": { full: "Security Audit", meaning: "A review process that evaluates the security measures of a system. (COC 3)" },
+  "Security Patch": { full: "Security Patch", meaning: "A software update that fixes security vulnerabilities. (COC 3)" },
+  "Server Farm": { full: "Server Farm", meaning: "A collection of servers housed in one location to handle high workloads. (COC 3)" },
+  "Server Maintenance": { full: "Server Maintenance", meaning: "Routine tasks performed to ensure optimal server performance. (COC 3)" },
+  "Server Monitoring": { full: "Server Monitoring", meaning: "The practice of continuously checking the health and uptime of servers. (COC 3)" },
+  "Server Rack": { full: "Server Rack", meaning: "A frame designed to hold multiple servers and networking equipment. (COC 3)" },
+  "Server Room": { full: "Server Room", meaning: "A dedicated space that houses physical servers and network hardware. (COC 3)" },
+  "Service Account": { full: "Service Account", meaning: "A specialized account used by applications or services to run processes. (COC 3)" },
+  "Service Management": { full: "Service Management", meaning: "The practice of managing IT services to meet business needs. (COC 3)" },
+  "Session Timeout": { full: "Session Timeout", meaning: "A security setting that logs users out after a period of inactivity. (COC 3)" },
+  "Shell Access": { full: "Shell Access", meaning: "Command-line access to a server’s operating system. (COC 3)" },
+  "SMTP Server": { full: "Simple Mail Transfer Protocol Server", meaning: "A server responsible for sending and routing outgoing emails. (COC 3)" },
+  "SNMP": { full: "Simple Network Management Protocol", meaning: "A protocol for monitoring and managing network devices. (COC 3)" },
+  "Software Deployment": { full: "Software Deployment", meaning: "The process of installing and updating software on multiple machines. (COC 3)" },
+  "SQL Server": { full: "SQL Server", meaning: "A relational database management system developed by Microsoft. (COC 3)" },
+  "SSL Certificate": { full: "Secure Sockets Layer Certificate", meaning: "A digital certificate that enables encrypted connections between a web server and browser. (COC 3)" },
+  "Static IP": { full: "Static IP Address", meaning: "A permanent IP address assigned to a device or server. (COC 3)" },
+  "Storage Capacity": { full: "Storage Capacity", meaning: "The maximum amount of data that can be stored on a system. (COC 3)" },
+  "Subnet Mask": { full: "Subnet Mask", meaning: "A number that defines the network and host portions of an IP address. (COC 3)" },
+  "System Logs": { full: "System Logs", meaning: "Recorded events that provide information about server operations. (COC 3)" },
+  "System Restore": { full: "System Restore", meaning: "A recovery feature that allows reverting the computer to a previous stable state. (COC 3)" },
+  "System Update": { full: "System Update", meaning: "The process of installing the latest patches and improvements to an operating system. (COC 3)" },
+  "TCP/IP": { full: "Transmission Control Protocol/Internet Protocol", meaning: "A suite of communication protocols used to connect devices on the Internet. (COC 3)" },
+  "Terminal Server": { full: "Terminal Server", meaning: "A server that provides remote desktop access to multiple users simultaneously. (COC 3)" },
+  "Throughput": { full: "Network Throughput", meaning: "The rate at which data is successfully transmitted over a network. (COC 3)" },
+  "Topology Diagram": { full: "Network Topology Diagram", meaning: "A visual representation of a network’s physical and logical structure. (COC 3)" },
+  "Traffic Management": { full: "Network Traffic Management", meaning: "The process of controlling data flow to optimize network performance. (COC 3)" },
+  "Uptime": { full: "System Uptime", meaning: "The total time a server or system has been running without interruption. (COC 3)" },
+  "User Access Control": { full: "User Access Control (UAC)", meaning: "A Windows security feature that prevents unauthorized system changes. (COC 3)" },
+  "User Account": { full: "User Account", meaning: "An identity established in a system that allows access to its resources. (COC 3)" },
+  "User Authentication": { full: "User Authentication", meaning: "The process of verifying a user’s identity before granting access. (COC 3)" },
+  "User Management": { full: "User Management", meaning: "The administrative process of creating and maintaining user accounts. (COC 3)" },
+  "User Profile": { full: "User Profile", meaning: "A collection of user-specific settings and preferences on a system. (COC 3)" },
+  "Virtual Directory": { full: "Virtual Directory", meaning: "A folder in a web server that maps to a physical location on disk. (COC 3)" },
+  "Virtual Machine": { full: "Virtual Machine (VM)", meaning: "A software-based emulation of a physical computer. (COC 3)" },
+  "Virtual Memory": { full: "Virtual Memory", meaning: "A memory management technique that uses disk space as RAM extension. (COC 3)" },
+  "Virtual Network": { full: "Virtual Network", meaning: "A logically isolated network created within a cloud or virtualization environment. (COC 3)" },
+  "Virtual Private Network": { full: "VPN", meaning: "A secure network connection established over a public network. (COC 3)" },
+  "Virtual Server": { full: "Virtual Server", meaning: "A server that runs in a virtualized environment rather than on physical hardware. (COC 3)" },
+  "Virus Definition": { full: "Antivirus Definition", meaning: "A database of known malware signatures used by antivirus programs. (COC 3)" },
+  "VM Host": { full: "Virtual Machine Host", meaning: "A physical server that runs one or more virtual machines. (COC 3)" },
+  "VM Snapshot": { full: "Virtual Machine Snapshot", meaning: "A saved state of a virtual machine at a specific point in time. (COC 3)" },
+  "Vulnerability Assessment": { full: "Vulnerability Assessment", meaning: "A process of identifying and evaluating security weaknesses. (COC 3)" },
+  "WAN": { full: "Wide Area Network", meaning: "A telecommunications network that extends over a large geographical area. (COC 3)" },
+  "Web Application": { full: "Web Application", meaning: "A software program that runs on a web server and is accessed through a browser. (COC 3)" },
+  "Web Hosting": { full: "Web Hosting", meaning: "A service that provides storage space and access for websites. (COC 3)" },
+  "Web Server": { full: "Web Server", meaning: "A server that stores, processes, and delivers web pages to users. (COC 3)" },
+  "Windows Firewall": { full: "Windows Defender Firewall", meaning: "A built-in Windows security feature that filters network traffic. (COC 3)" },
+  "Windows PowerShell": { full: "PowerShell", meaning: "A command-line shell and scripting language for Windows system administration. (COC 3)" },
+  "Windows Registry": { full: "Windows Registry", meaning: "A hierarchical database that stores configuration settings and options. (COC 3)" },
+  "Workgroup": { full: "Windows Workgroup", meaning: "A peer-to-peer network model for small groups of computers. (COC 3)" },
+  "Workflow Automation": { full: "Workflow Automation", meaning: "The use of technology to streamline and automate repetitive processes. (COC 3)" },
+  "Zone File": { full: "DNS Zone File", meaning: "A text file that defines the mappings of domain names to IP addresses. (COC 3)" },
+  "Access Control List": { full: "ACL", meaning: "A list of permissions that specify which users can access certain system resources. (COC 3)" },
+  "Backup Verification": { full: "Backup Verification", meaning: "The process of checking that a data backup is complete and usable. (COC 3)" },
+  "Boot Loader": { full: "Boot Loader", meaning: "A small program that loads the operating system into memory. (COC 3)" },
+  "Cluster Node": { full: "Cluster Node", meaning: "An individual computer participating in a server cluster. (COC 3)" },
+  "Command-Line Interface": { full: "CLI", meaning: "A text-based interface used to interact with operating systems or software. (COC 3)" },
+  "Data Center": { full: "Data Center", meaning: "A facility used to house computer systems and associated components. (COC 3)" },
+  "Data Mirroring": { full: "Data Mirroring", meaning: "A technique that copies data in real time to ensure redundancy. (COC 3)" },
+  "Deployment Script": { full: "Deployment Script", meaning: "A script that automates the installation and configuration of software. (COC 3)" },
+  "DHCP Lease": { full: "DHCP Lease", meaning: "A temporary IP address assignment given by a DHCP server. (COC 3)" },
+  "Disk Partition": { full: "Disk Partition", meaning: "A division of a hard drive into separate logical sections. (COC 3)" },
+  "Domain Controller": { full: "Domain Controller", meaning: "A server that authenticates and authorizes users in a domain network. (COC 3)" },
+  "Event Log": { full: "Event Log", meaning: "A record of system, security, and application events on a server. (COC 3)" },
+  "Failback": { full: "Failback", meaning: "The process of returning operations to a primary system after recovery. (COC 3)" },
+  "Failover Cluster": { full: "Failover Cluster", meaning: "A group of servers that provide continuous availability by automatically transferring workloads. (COC 3)" },
+  "File Sharing": { full: "Network File Sharing", meaning: "The process of making files accessible to multiple users over a network. (COC 3)" },
+  "Firewall Policy": { full: "Firewall Policy", meaning: "A set of security rules that define how traffic is allowed or blocked. (COC 3)" },
+  "FTP Server": { full: "File Transfer Protocol Server", meaning: "A server that transfers files between systems using the FTP protocol. (COC 3)" },
+  "Group Policy": { full: "Windows Group Policy", meaning: "A feature that allows centralized management of user and computer settings. (COC 3)" },
+  "High Availability": { full: "High Availability", meaning: "A design approach that ensures minimal downtime and continuous service. (COC 3)" },
+  "Hotfix": { full: "Software Hotfix", meaning: "A quick software patch released to address critical issues. (COC 3)" },
+  "Hyper-V": { full: "Microsoft Hyper-V", meaning: "A virtualization platform that allows multiple operating systems to run simultaneously. (COC 3)" },
+  "Load Distribution": { full: "Load Distribution", meaning: "The process of dividing network or processing tasks among multiple systems. (COC 3)" },
+  "Log File": { full: "Log File", meaning: "A text file containing recorded events, errors, or transactions. (COC 3)" },
+  "Maintenance Schedule": { full: "Maintenance Schedule", meaning: "A planned routine for performing system upkeep and updates. (COC 3)" },
+  "Network Bridge": { full: "Network Bridge", meaning: "A device that connects and filters traffic between two network segments. (COC 3)" },
+  "Network Diagram": { full: "Network Diagram", meaning: "A graphical representation of a computer network’s layout and connections. (COC 3)" },
+  "Network Interface": { full: "Network Interface", meaning: "A point of connection that enables communication between a computer and a network. (COC 3)" },
+  "Network Mapping": { full: "Network Mapping", meaning: "The process of identifying and visualizing connected devices within a network. (COC 3)" },
+  "Operating System": { full: "Operating System", meaning: "The software that manages computer hardware, software resources, and services. (COC 3)" },
+  "Password Policy": { full: "Password Policy", meaning: "A set of security rules that govern the creation and use of passwords. (COC 3)" },
+  "Patch Rollback": { full: "Patch Rollback", meaning: "The process of undoing or removing an installed patch or update. (COC 3)" },
+  "Performance Counter": { full: "Performance Counter", meaning: "A tool that measures system resource usage in real time. (COC 3)" },
+  "Ping Response": { full: "Ping Response", meaning: "A reply sent from a device to confirm network connectivity. (COC 3)" },
+};
+const adminTermsCOC3 = JSON.parse(localStorage.getItem("addedTermsCOC3") || "[]");
+adminTermsCOC3.forEach(t => {
+    terms[t.term.toUpperCase()] = {
+        full: t.full || t.term,
+        meaning: t.meaning,
+        coc: "COC 3"
+    };
+});
+
+// ================== BUILD LOOKUP ==================
+let lookup = {};
+function rebuildLookup() {
+    lookup = {};
+    for (const key in terms) {
+        lookup[key.toUpperCase()] = key;
+        if (terms[key].full) lookup[terms[key].full.toUpperCase()] = key;
+    }
+}
+rebuildLookup();
+
+// ================== SEARCH FUNCTION ==================
+const termInput = document.getElementById("termInput");
+const translateBtn = document.getElementById("translateBtn");
+const speakBtn = document.getElementById("speakBtn");
+const listBtn = document.getElementById("listBtn");
+const favoriteBtn = document.getElementById("favoriteBtn");
+const outputDiv = document.getElementById("output");
+
+let currentTerm = "", currentFull = "";
+
+translateBtn.addEventListener("click", () => {
+    const raw = termInput.value.trim();
+    if (!raw) return;
+    const alias = lookup[raw.toUpperCase()];
+    if (!alias) {
+        outputDiv.innerHTML = "<span style='color:red'>Term not found.</span>";
+        speakBtn.disabled = true;
+        favoriteBtn.disabled = true;
+        return;
+    }
+    const data = terms[alias];
+    currentTerm = alias;
+    currentFull = data.full;
+    outputDiv.innerHTML = `<strong>${alias}</strong><br><em>${data.full}</em><br>${data.meaning}`;
+    speakBtn.disabled = false;
+    favoriteBtn.disabled = false;
+});
+
+termInput.addEventListener("keyup", e => {
+    if (e.key === "Enter") translateBtn.click();
+});
+
+// ================== SPEAK ==================
+speakBtn.addEventListener("click", () => {
+    if (!currentFull) return;
+    const utter = new SpeechSynthesisUtterance(currentFull);
+    utter.lang = "en-US";
+    speechSynthesis.speak(utter);
+});
+
+// ================== SHOW LIST ==================
+listBtn.addEventListener("click", () => {
+  window.location.href = "COC1DICTIONARY.html";
+});
+
+
+favoriteBtn.addEventListener("click", () => {
+    if (!currentTerm) return;
+    let favs = JSON.parse(localStorage.getItem("favorites")) || [];
+    if (!favs.includes(currentTerm)) favs.push(currentTerm);
+    localStorage.setItem("favorites", JSON.stringify(favs));
+    window.location.href = "Favoritelist.html";
+  });
+</script>
+
+</body>
+</html>

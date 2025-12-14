@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - COC 2</title>
+<style>
+    body { font-family: Arial; background: #eaffea; padding: 20px; max-width: 480px; margin: auto; }
+    h2 { text-align: center; color: green; }
+    .box { background: white; padding: 15px; margin-top: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    input, select, textarea { width: 100%; padding: 10px; margin-top: 8px; border-radius: 6px; border: 1px solid #bbb; font-size: 15px; box-sizing: border-box; }
+    textarea { height: 80px; }
+    .btn { background: green; color: white; padding: 10px; border: none; width: 100%; margin-top: 12px; font-size: 16px; cursor: pointer; border-radius: 5px; }
+    .btn:hover { background: darkgreen; }
+    .term-card { background: #f4fff4; padding: 12px; border-radius: 7px; margin-bottom: 10px; }
+    .actions button { padding: 6px 10px; margin-right: 6px; border: none; border-radius: 4px; cursor: pointer; }
+    .edit-btn { background: #3498db; color:white; }
+    .remove-btn { background: #e74c3c; color:white; }
+</style>
+</head>
+<body>
+
+<h2>COC 2 – Add Terms</h2>
+
+<div class="box">
+  <h3>Add New Term</h3>
+  <input id="termInput" placeholder="Term (e.g., IP Address)">
+  <input id="fullInput" placeholder="Full Name (optional)">
+  <textarea id="meaningInput" placeholder="Meaning"></textarea>
+
+  <button class="btn" onclick="addTerm()">Add Term</button>
+</div>
+
+<div class="box">
+  <h3>COC 2 Terms</h3>
+  <div id="termList"></div>
+</div>
+
+<!-- Back Button -->
+<button class="btn" onclick="window.location.href='adminhomepage.html'">Back to Admin Homepage</button>
+
+<script>
+let addedTerms = JSON.parse(localStorage.getItem("addedTermsCOC2") || "[]");
+
+function save() {
+    localStorage.setItem("addedTermsCOC2", JSON.stringify(addedTerms));
+    displayTerms();
+}
+
+function addTerm() {
+    const term = document.getElementById("termInput").value.trim();
+    const full = document.getElementById("fullInput").value.trim();
+    const meaning = document.getElementById("meaningInput").value.trim();
+
+    if (!term || !meaning) { alert("Term and meaning are required!"); return; }
+
+    addedTerms.push({ term, full, meaning });
+    save();
+
+    document.getElementById("termInput").value = "";
+    document.getElementById("fullInput").value = "";
+    document.getElementById("meaningInput").value = "";
+
+    alert("Term added successfully!");
+}
+
+function displayTerms() {
+    const list = document.getElementById("termList");
+    list.innerHTML = "";
+    if (addedTerms.length === 0) {
+        list.innerHTML = "<p>No terms added yet.</p>";
+        return;
+    }
+
+    addedTerms.forEach((t, index) => {
+        const div = document.createElement("div");
+        div.className = "term-card";
+        div.innerHTML = `
+            <strong>${t.term}</strong><br>
+            ${t.meaning}<br><br>
+            <div class="actions">
+                <button class="edit-btn" onclick="editTerm(${index})">Edit</button>
+                <button class="remove-btn" onclick="removeTerm(${index})">Remove</button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+function removeTerm(index) {
+    addedTerms.splice(index, 1);
+    save();
+}
+
+function editTerm(index) {
+    const t = addedTerms[index];
+    const newTerm = prompt("Edit Term:", t.term);
+    const newMeaning = prompt("Edit Meaning:", t.meaning);
+    const newFull = prompt("Edit Full Name:", t.full);
+
+    addedTerms[index] = { 
+        term: newTerm || t.term, 
+        meaning: newMeaning || t.meaning,
+        full: newFull || t.full
+    };
+
+    save();
+}
+
+displayTerms();
+</script>
+
+</body>
+</html>

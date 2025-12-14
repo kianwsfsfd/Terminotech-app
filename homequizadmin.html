@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Homepage</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    background: #eaffea;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 30px;
+    max-width: 480px;
+    margin: auto;
+  }
+  h2 { 
+    color: green; 
+    margin-bottom: 25px;
+  }
+  button {
+    display: block;
+    width: 90%;
+    margin: 12px auto;
+    padding: 15px;
+    font-size: 18px;
+    background: green;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: darkgreen;
+  }
+</style>
+</head>
+<body>
+
+<h2>Admin – Add Questions</h2>
+
+<button onclick="location.href='admin_easy.html'">Add EASY Questions</button>
+<button onclick="location.href='admin_normal.html'">Add NORMAL Questions</button>
+<button onclick="location.href='admin_hard.html'">Add HARD Questions</button>
+
+<!-- ⭐ BACK BUTTON TO MAIN ADMIN HOME -->
+<button onclick="location.href='admin_main_home.html'">⬅ Back</button>
+
+</body>
+</html>
